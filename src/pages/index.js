@@ -2,7 +2,6 @@ import React from 'react';
 import styled, {
   ThemeProvider,
   createGlobalStyle,
-  withTheme,
 } from 'styled-components';
 
 import { GridStyles, Row, Col } from '../components/Grid';
