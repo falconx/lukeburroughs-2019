@@ -1,8 +1,13 @@
 let theme = {};
 
 theme.layout = {
-  width: 1640,
+  constrain: 1680,
   gutter: 20,
+  /* mobile-first */
+  navHeight: {
+    xs: 60,
+    md: 80,
+  },
 };
 
 /* Bootstrap breakpoints to match AntD grid components */
@@ -19,3 +24,16 @@ theme.colors = {
 };
 
 export default theme;
+
+/**
+ * - Caption/Heading levels?
+ * - Two different gutters?
+ * - Content fills column widths and drops below 390px when viewport is shrinked
+ * - Nav appearance/behaviour
+ * - Full width/100vh header?
+ * - Hero should have a max-height?
+ * 
+ * 
+ * https://github.com/gatsbyjs/gatsby/issues/2470
+ * https://github.com/fregante/object-fit-images
+ */

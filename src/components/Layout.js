@@ -1,34 +1,46 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import Image from 'gatsby-image';
 import styled from 'styled-components';
-// import { useStaticQuery, graphql } from 'gatsby';
 
 import VerticalSpacing from './VerticalSpacing';
 
 import hero from '../images/ff8-hero.png';
 import logo from '../images/logo-white.png';
 
-const Container = styled.div`
-  margin: 0 auto;
-  padding: ${props => props.theme.layout.gutter / 2}px;
-  max-width: ${props => props.theme.layout.width}px;
-`;
-
 const Header = styled.header`
   position: relative;
+`;
+
+const HeroImage = styled.img`
+  height: 100vh;
+  width: 100%;
+  object-fit: cover;
+  object-position: top center;
+`;
+
+const Main = styled.main`
+  padding: 0 10px;
+  margin: 0 auto;
+  max-width: ${props => props.theme.layout.constrain}px;
+
+  ${props => props.theme.query.md} {
+    padding: 0 30px;
+  }
 `;
 
 const Nav = styled.nav`
   position: absolute;
   top: 0;
   left: 0;
+  right: 0;
+  margin: auto;
   width: 100%;
+  max-width: ${props => props.theme.layout.constrain}px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 80px;
-  padding: 0 30px;
+  height: ${props => props.theme.layout.navHeight.xs}px;
+  padding: 0 10px;
   color: #fff;
   font-size: 1.5rem;
   letter-spacing: -0.8px;
@@ -39,6 +51,11 @@ const Nav = styled.nav`
 
   li + li {
     margin-left: 90px;
+  }
+
+  ${props => props.theme.query.md} {
+    height: ${props => props.theme.layout.navHeight.md}px;
+    padding: 0 30px;
   }
 `;
 
@@ -71,6 +88,12 @@ const NavLink = styled.a.attrs(props => ({
     font-weight: 500;
     border-bottom-color: currentColor;
   `}
+
+  /* Todo: replace with alternate nav */
+  display: none;
+  ${props => props.theme.query.lg} {
+    display: inline;
+  }
 `;
 
 const Logo = styled.img.attrs({
@@ -80,48 +103,37 @@ const Logo = styled.img.attrs({
   height: 20px;
 `;
 
-const Layout = ({ children }) => {
-  // const data = useStaticQuery(graphql`
-  //   query SiteTitleQuery {
-  //     site {
-  //       siteMetadata {
-  //       }
-  //     }
-  //   }
-  // `);
+const Layout = ({ children }) => (
+  <React.Fragment>
+    {/* <Header siteTitle={data.site.siteMetadata.title} /> */}
 
-  return (
-    <Container>
-      {/* <Header siteTitle={data.site.siteMetadata.title} /> */}
+    <Header>
+      <Nav>
+        <a href="/">
+          <Logo />
+        </a>
+        <ul>
+          <li>
+            <NavLink href="/" active>Work</NavLink>
+          </li>
+          <li>
+            <NavLink href="/">Process</NavLink>
+          </li>
+          <li>
+            <NavLink href="/">About</NavLink>
+          </li>
+        </ul>
+      </Nav>
+      <HeroImage src={hero} alt="" />
+    </Header>
 
-      <Header>
-        <Nav>
-          <a href="/">
-            <Logo />
-          </a>
-          <ul>
-            <li>
-              <NavLink href="/" active>Work</NavLink>
-            </li>
-            <li>
-              <NavLink href="/">Process</NavLink>
-            </li>
-            <li>
-              <NavLink href="/">About</NavLink>
-            </li>
-          </ul>
-        </Nav>
-        <img src={hero} alt="" />
-      </Header>
+    <VerticalSpacing size={1} />
 
-      <VerticalSpacing size={1} />
-
-      <main>
-        {children}
-      </main>
-    </Container>
-  );
-};
+    <Main>
+      {children}
+    </Main>
+  </React.Fragment>
+);
 
 Layout.propTypes = {
   children: PropTypes.node.isRequired,
