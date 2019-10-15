@@ -1,16 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 import VerticalSpacing from './VerticalSpacing';
 
 import hero from '../images/ff8-hero.png';
 import logo from '../images/logo-white.png';
 
+const slideIn = keyframes`
+  0% {
+    position: absolute;
+    transform: translateY(0);
+  }
+
+  1% {
+    position: fixed;
+    background-color: #fff;
+    transform: translateY(-100%);
+  }
+
+  100% {
+    position: fixed;
+    background-color: #fff;
+    transform: translateY(0);
+  }
+`;
+
 const Header = styled.header`
   position: relative;
 `;
 
+// Todo: Use gatsby-image
 const HeroImage = styled.img`
   height: 100vh;
   width: 100%;
@@ -28,12 +48,30 @@ const Main = styled.main`
   }
 `;
 
-const Nav = styled.nav`
+const NavList = styled.ul``;
+const NavListItem = styled.li``;
+
+const StyledNav = styled.nav`
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  margin: auto;
+  width: 100%;
+
+  animation: ${slideIn} 1s;
+  animation-iteration-count: 1;
+  animation-fill-mode: backwards;
+  animation-direction: reverse;
+
+  ${props => props.isSticky && css`
+    z-index: 1;
+
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+  `}
+`;
+
+const NavContent = styled.div`
+  margin: 0 auto;
   width: 100%;
   max-width: ${props => props.theme.layout.constrain}px;
   display: flex;
@@ -45,11 +83,11 @@ const Nav = styled.nav`
   font-size: 1.5rem;
   letter-spacing: -0.8px;
 
-  ul {
+  ${NavList} {
     display: flex;
   }
 
-  li + li {
+  ${NavListItem} + ${NavListItem} {
     margin-left: 90px;
   }
 
@@ -58,6 +96,43 @@ const Nav = styled.nav`
     padding: 0 30px;
   }
 `;
+
+StyledNav.propTypes = {
+  isSticky: PropTypes.bool,
+};
+
+const Nav = ({ stickyOffset, ...props }) => {
+  const [isSticky, setIsSticky] = useState(false);
+
+  const onScroll = () => {
+    setIsSticky(window.pageYOffset > stickyOffset);
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  });
+
+  return (
+    <StyledNav
+      {...props}
+      isSticky={isSticky}
+      // force re-render to initiate CSS animation
+      key={isSticky}
+    />
+  );
+};
+
+Nav.propTypes = {
+  stickyOffset: PropTypes.number,
+};
+
+Nav.defaultProps = {
+  stickyOffset: 0,
+};
 
 const NavLink = styled.a.attrs(props => ({
   title: props.children,
@@ -88,12 +163,6 @@ const NavLink = styled.a.attrs(props => ({
     font-weight: 500;
     border-bottom-color: currentColor;
   `}
-
-  /* Todo: replace with alternate nav */
-  display: none;
-  ${props => props.theme.query.lg} {
-    display: inline;
-  }
 `;
 
 const Logo = styled.img.attrs({
@@ -103,37 +172,49 @@ const Logo = styled.img.attrs({
   height: 20px;
 `;
 
-const Layout = ({ children }) => (
-  <React.Fragment>
-    {/* <Header siteTitle={data.site.siteMetadata.title} /> */}
+const Layout = ({ children }) => {
+  const headerEl = useRef(null);
 
-    <Header>
-      <Nav>
-        <a href="/">
-          <Logo />
-        </a>
-        <ul>
-          <li>
-            <NavLink href="/" active>Work</NavLink>
-          </li>
-          <li>
-            <NavLink href="/">Process</NavLink>
-          </li>
-          <li>
-            <NavLink href="/">About</NavLink>
-          </li>
-        </ul>
-      </Nav>
-      <HeroImage src={hero} alt="" />
-    </Header>
+  const [stickyOffset, setStickyOffset] = useState();
 
-    <VerticalSpacing size={1} />
+  useLayoutEffect(() => {
+    setStickyOffset(headerEl.current.offsetHeight);
+  });
+  
+  return (
+    <React.Fragment>
+      {/* <Header siteTitle={data.site.siteMetadata.title} /> */}
 
-    <Main>
-      {children}
-    </Main>
-  </React.Fragment>
-);
+      <Header ref={headerEl}>
+        <Nav stickyOffset={stickyOffset}>
+          <NavContent>
+            <a href="/">
+              <Logo />
+            </a>
+            <NavList>
+              <NavListItem>
+                <NavLink href="/" active>Work</NavLink>
+              </NavListItem>
+              <NavListItem>
+                <NavLink href="/">Process</NavLink>
+              </NavListItem>
+              <NavListItem>
+                <NavLink href="/">About</NavLink>
+              </NavListItem>
+            </NavList>
+          </NavContent>
+        </Nav>
+        <HeroImage src={hero} alt="" />
+      </Header>
+
+      <VerticalSpacing size={1} />
+
+      <Main>
+        {children}
+      </Main>
+    </React.Fragment>
+  );
+}
 
 Layout.propTypes = {
   children: PropTypes.node.isRequired,
