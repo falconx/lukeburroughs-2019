@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import VerticalSpacing from './VerticalSpacing';
 
 import hero from '../images/ff8-hero.png';
 import logo from '../images/logo-white.png';
+
+const SLIDE_IN_DURATION = 1000; // ms
 
 const slideIn = keyframes`
   0% {
@@ -56,19 +58,27 @@ const StyledNav = styled.nav`
   top: 0;
   left: 0;
   width: 100%;
+  z-index: 1;
 
-  animation: ${slideIn} 1s;
+  animation: ${slideIn} ${SLIDE_IN_DURATION / 1000}s;
   animation-iteration-count: 1;
   animation-fill-mode: backwards;
   animation-direction: reverse;
 
-  ${props => props.isSticky && css`
-    z-index: 1;
-
+  ${props => props.isSticky && `
     animation-fill-mode: forwards;
     animation-direction: normal;
   `}
+
+  ${props => props.isInitialRender && `
+    visibility: hidden;
+  `}
 `;
+
+StyledNav.propTypes = {
+  isInitialRender: PropTypes.bool,
+  isSticky: PropTypes.bool,
+};
 
 const NavContent = styled.div`
   margin: 0 auto;
@@ -97,12 +107,9 @@ const NavContent = styled.div`
   }
 `;
 
-StyledNav.propTypes = {
-  isSticky: PropTypes.bool,
-};
-
 const Nav = ({ stickyOffset, ...props }) => {
   const [isSticky, setIsSticky] = useState(false);
+  const [isInitialRender, setIsInitialRender] = useState(true);
 
   const onScroll = () => {
     setIsSticky(window.pageYOffset > stickyOffset);
@@ -110,6 +117,11 @@ const Nav = ({ stickyOffset, ...props }) => {
 
   useEffect(() => {
     window.addEventListener('scroll', onScroll);
+
+    // hides the nav whilst it transitions into position
+    setTimeout(() => {
+      setIsInitialRender(false);
+    }, SLIDE_IN_DURATION);
 
     return () => {
       window.removeEventListener('scroll', onScroll);
@@ -119,6 +131,7 @@ const Nav = ({ stickyOffset, ...props }) => {
   return (
     <StyledNav
       {...props}
+      isInitialRender={isInitialRender}
       isSticky={isSticky}
       // force re-render to initiate CSS animation
       key={isSticky}
