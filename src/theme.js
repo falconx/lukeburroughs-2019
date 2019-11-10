@@ -27,11 +27,10 @@ export default theme;
 
 /**
  * - Caption/Heading levels?
- * - Two different gutters?
- * - Content fills column widths and drops below 390px when viewport is shrinked
  * - Nav appearance/behaviour
  * - Full width/100vh header?
- * - Hero should have a max-height?
+ * - Hero should have a max-height
+ * - Two gutter configs?
  * 
  * 
  * https://github.com/gatsbyjs/gatsby/issues/2470
