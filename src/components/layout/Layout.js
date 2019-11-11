@@ -14,6 +14,7 @@ import logoLight from '../../images/logo-light.png';
 import logoDark from '../../images/logo-dark.png';
 
 const SLIDE_IN_DURATION = 1000; // ms
+const FADE_IN_DURATION = 500; // ms
 
 const slideIn = keyframes`
   0% {
@@ -62,8 +63,7 @@ const StyledNav = styled.nav`
   left: 0;
   width: 100%;
   z-index: 1;
-  color: ${props => (!props.isSticky || props.isDrawerOpen) ? '#fff' : '#000'};
-  transition: color 0.5s ease-out;
+  color: ${props => (!props.isSticky || props.isDrawerOpen) ? '#fff' : props.theme.colors.black};
 
   animation: ${slideIn} ${SLIDE_IN_DURATION / 1000}s;
   animation-iteration-count: 1;
@@ -210,13 +210,10 @@ const Drawer = styled.div`
   display: flex;
   flex-direction: column;
   color: #fff;
-  background-color: #000;
-  transform: translateX(100%);
-  transition: transform 0.5s ease-out;
-
-  ${props => props.show && `
-    transform: translateX(0);
-  `}
+  background-color: ${props => props.theme.colors.darkGrey};
+  opacity: ${props => props.show ? '1' : '0'};
+  visibility: ${props => props.show ? 'visible' : 'hidden'};
+  transition: ${FADE_IN_DURATION / 1000}s;
 `;
 
 const DrawerContent = styled.div`
