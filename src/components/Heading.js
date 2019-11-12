@@ -2,7 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-const Heading = ({ headingLevel, ...props }) => React.createElement(`h${headingLevel}`, props);
+import TextSquare from './TextSquare';
+
+const Heading = ({ headingLevel, ...props }) => {
+  const children = (props.type === 'caption')
+    ? <TextSquare>{props.children}</TextSquare>
+    : props.children;
+
+  return React.createElement(`h${headingLevel}`, {
+    ...props,
+    children
+  });
+};
 
 Heading.propTypes = {
   headingLevel: PropTypes.oneOf([1, 2, 3, 4, 5, 6]).isRequired,
@@ -15,7 +26,6 @@ export default styled(Heading)`
     font-weight: 500;
     line-height: 1;
     letter-spacing: -1.8px;
-    margin-bottom: 10px;
 
     ${props.theme.query.md} {
       font-size: 3.125rem;
@@ -30,15 +40,5 @@ export default styled(Heading)`
     font-size: 1.25rem;
     font-weight: normal;
     letter-spacing: -0.4px;
-
-    &::before {
-      content: '';
-      display: inline-block;
-      vertical-align: baseline;
-      height: 1em;
-      width: 1em;
-      margin-right: 5px;
-      background-color: currentColor;
-    }
   `}
 `;

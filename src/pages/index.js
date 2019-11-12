@@ -1,16 +1,23 @@
 import React from 'react';
-import styled, {
+import {
   ThemeProvider,
   createGlobalStyle,
 } from 'styled-components';
 
-import { GridStyles, Row, Col } from '../components/Grid';
+import { GridStyles } from '../components/Grid';
 import Layout from '../components/layout/Layout';
 import Spacer from '../components/Spacer';
 import VerticalSpacing from '../components/VerticalSpacing';
-import Heading from '../components/Heading';
 import SEO from '../components/Seo';
 import { BreakpointProvider } from '../components/Media';
+
+import FullImg from '../components/layout/FullImg';
+import Intro from '../components/layout/Intro';
+import MidImageLeft from '../components/layout/MidImageLeft';
+import MidImageRight from '../components/layout/MidImageRight';
+import SmallImg from '../components/layout/SmallImg';
+import ProjectInfo from '../components/layout/ProjectInfo';
+import WhereTo from '../components/layout/WhereTo';
 
 import matterRegular from '../fonts/MatterTRIAL-Regular.otf';
 import matterMedium from '../fonts/MatterTRIAL-Medium.otf';
@@ -18,6 +25,7 @@ import matterMedium from '../fonts/MatterTRIAL-Medium.otf';
 import dMidImageRight from '../images/content-mid-1.jpg';
 import dImgFull from '../images/content-full-1.jpg';
 import dSmallImage from '../images/content-small-1.jpg';
+import contentMid1 from '../images/content-mid-1@3x.png';
 
 import theme from '../theme';
 
@@ -97,8 +105,7 @@ const GlobalStyles = createGlobalStyle`
     text-decoration: none;
   }
 
-  /* Remove button styles on button elements with a class attribute */
-  button[class] {
+  button {
     padding: 0;
     margin: 0;
     font: inherit;
@@ -151,28 +158,6 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
-const FullImage = styled.img`
-  display: block;
-`;
-
-const LayoutSmall = styled.div`
-  display: flex;
-  justify-content: center;
-  padding: 30px;
-  background-color: ${props => props.dark
-    ? props.theme.colors.darkGrey
-    : props.theme.colors.silverGrey
-  };
-
-  ${props => props.theme.query.md} {
-    padding: 40px 60px;
-  }
-
-  ${props => props.theme.query.lg} {
-    padding: 90px;
-  }
-`;
-
 const IndexPage = () => (
   <ThemeProvider theme={theme}>
     <BreakpointProvider>
@@ -182,137 +167,91 @@ const IndexPage = () => (
         <GlobalStyles />
         <GridStyles />
 
-        <Row gutter={20}>
-          <Col xs={24} lg={6}>
-            <Heading
-              headingLevel={2}
-              type="caption"
-            >The Challenge</Heading>
-          </Col>
-          <Col xs={24} lg={18}>
-            <Heading
-              headingLevel={1}
-              type="main"
-            >It’s twenty years&mdash;<br />twenty years too long</Heading>
-
-            <Row gutter={20}>
-              <Col xs={24} lg={8}>
-                <p>
-                  With its open form and radiating lines, the Plume logomark
-                  embodies the limitless adaptability of the Plume experience.
-                  The modular, hexagonal geometry of the mark is reminiscent of
-                  both structural and molecular
-                </p>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+        <Intro
+          caption="The Challenge"
+          title={<span>It’s twenty years&mdash;<br />twenty years too long</span>}
+        >
+          <p>
+            With its open form and radiating lines, the Plume logomark
+            embodies the limitless adaptability of the Plume experience.
+            The modular, hexagonal geometry of the mark is reminiscent of
+            both structural and molecular
+          </p>
+        </Intro>
 
         <Spacer />
 
-        <Row
-          type="flex"
-          align="bottom"
-          gutter={20}
+        <MidImageRight
+          caption="Caption title"
+          image={{
+            src: dMidImageRight,
+            alt: ''
+          }}
         >
-          <Col xs={24} lg={{ span: 18, push: 6 }}>
-            <img src={dMidImageRight} alt="" />
-          </Col>
-          <Col xs={24} lg={{ span: 6, pull: 18 }}>
-            <Heading
-              headingLevel={2}
-              type="caption"
-            >Caption title</Heading>
+          <p>
+            Logomark embodies the limitless adaptability of the Plume experience.
+            The modular, hexagonal geometry of the mark is reminiscent of both
+            structural and molecularThe modular, hexagonal geometry of tgsdgs
+          </p>
+        </MidImageRight>
 
-            <p>
-              Logomark embodies the limitless adaptability of the Plume experience.
-              The modular, hexagonal geometry of the mark is reminiscent of both
-              structural and molecularThe modular, hexagonal geometry of tgsdgs
-            </p>
-          </Col>
-        </Row>
+        <VerticalSpacing size={3} />
 
-        <VerticalSpacing size={1} />
+        <FullImg src={dImgFull} alt="" />
 
-        <FullImage src={dImgFull} alt="" />
+        <VerticalSpacing size={3} />
 
-        <VerticalSpacing size={1} />
+        <SmallImg
+          imageLeft={{
+            src: dSmallImage,
+            alt: ''
+          }}
+          imageRight={{
+            src: dSmallImage,
+            alt: ''
+          }}
+        />
 
-        <LayoutSmall>
-          <Row gutter={20}>
-            <Col xs={24} sm={12}>
-              <img src={dSmallImage} alt="" />
-            </Col>
-            <Col xs={24} sm={12}>
-              <img src={dSmallImage} alt="" />
-            </Col>
-          </Row>
-        </LayoutSmall>
+        <VerticalSpacing size={3} />
 
-        <VerticalSpacing size={1} />
+        <SmallImg
+          dark
+          imageLeft={{
+            src: dSmallImage,
+            alt: ''
+          }}
+          imageRight={{
+            src: dSmallImage,
+            alt: ''
+          }}
+        />
 
-        <Row
-          type="flex"
-          align="bottom"
-          gutter={20}
+        <VerticalSpacing size={3} />
+
+        <MidImageLeft
+          caption="Caption title"
+          image={{
+            src: dMidImageRight,
+            alt: ''
+          }}
         >
-          <Col xs={24} lg={18}>
-            <img src={dMidImageRight} alt="" />
-          </Col>
-          <Col xs={24} lg={6}>
-            <Heading
-              headingLevel={2}
-              type="caption"
-            >Caption title</Heading>
+          <p>
+            Logomark embodies the limitless adaptability of the Plume experience.
+            The modular, hexagonal geometry of the mark is reminiscent of both
+            structural and molecularThe modular, hexagonal geometry of tgsdgs
+          </p>
+        </MidImageLeft>
 
-            <p>
-              Logomark embodies the limitless adaptability of the Plume experience.
-              The modular, hexagonal geometry of the mark is reminiscent of both
-              structural and molecularThe modular, hexagonal geometry of tgsdgs
-            </p>
-          </Col>
-        </Row>
+        <ProjectInfo
+          title="Title goes here!"
+          caption="Caption goes here!"
+        />
 
-        <VerticalSpacing size={1} />
-
-        <Row gutter={20}>
-          <Col xs={24} lg={6}>
-            <Heading
-              headingLevel={2}
-              type="caption"
-            >The Challenge</Heading>
-          </Col>
-          <Col xs={24} lg={18}>
-            <Heading
-              headingLevel={1}
-              type="main"
-            >First impressions,<br />age-old memories</Heading>
-
-            <Row gutter={20}>
-              <Col xs={24} lg={8}>
-                <p>
-                  With its open form and radiating lines, the Plume logomark
-                  embodies the limitless adaptability of the Plume experience.
-                  The modular, hexagonal geometry of the mark is reminiscent of
-                  both structural and molecular
-                </p>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-
-        <Spacer />
-
-        <LayoutSmall dark>
-          <Row gutter={20}>
-            <Col xs={24} sm={12}>
-              <img src={dSmallImage} alt="" />
-            </Col>
-            <Col xs={24} sm={12}>
-              <img src={dSmallImage} alt="" />
-            </Col>
-          </Row>
-        </LayoutSmall>
+        <WhereTo>
+          <img src={contentMid1} alt="" />
+          <img src={contentMid1} alt="" />
+          <img src={contentMid1} alt="" />
+        </WhereTo>
       </Layout>
     </BreakpointProvider>
   </ThemeProvider>

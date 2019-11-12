@@ -2,12 +2,12 @@ import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled, { keyframes } from 'styled-components';
 
-// import Portal from '../Portal';
 import { Media } from '../Media';
 import VerticalSpacing from '../VerticalSpacing';
 
-import LargeNavLinks from './LargeNavLinks';
-import CompactNavLinks from './CompactNavLinks';
+import Hero from './Hero';
+import LargeNavLinks from './nav/LargeNavLinks';
+import CompactNavLinks from './nav/CompactNavLinks';
 
 import hero from '../../images/ff8-hero.png';
 import logoLight from '../../images/logo-light.png';
@@ -37,14 +37,6 @@ const slideIn = keyframes`
 
 const Header = styled.header`
   position: relative;
-`;
-
-// Todo: Use gatsby-image
-const HeroImage = styled.img`
-  height: 100vh;
-  width: 100%;
-  object-fit: cover;
-  object-position: top center;
 `;
 
 const Main = styled.main`
@@ -324,10 +316,11 @@ const Layout = ({ children }) => {
             </Nav>
           )}
         </Media>
-        <HeroImage src={hero} alt="" />
+        
+        <Hero src={hero} alt="" />
       </Header>
 
-      <VerticalSpacing size={1} />
+      <VerticalSpacing size={3} />
 
       <Main>
         {children}
