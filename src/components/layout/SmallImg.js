@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { Row, Col } from '../../components/Grid';
+import { Row, Col } from '../Grid';
 
 // Todo: use Gatsby Image
 

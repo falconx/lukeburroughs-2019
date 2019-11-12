@@ -16,6 +16,7 @@ import MidImageRight from '../components/layout/MidImageRight';
 import SmallImg from '../components/layout/SmallImg';
 import ProjectInfo from '../components/layout/ProjectInfo';
 import WhereTo from '../components/layout/WhereTo';
+import Thumbnail from '../components/layout/Thumbnail';
 
 import matterRegular from '../fonts/MatterTRIAL-Regular.otf';
 import matterMedium from '../fonts/MatterTRIAL-Medium.otf';
@@ -231,15 +232,24 @@ const IndexPage = () => (
         </MidImageLeft>
 
         <ProjectInfo
-          title="Title goes here!"
           caption="Caption goes here!"
-        />
+        >
+          Awaken Sounds: 2018—2019<br />
+          Client—Self Initiated + Soundcloud / Brand Systems / Interaction Design / Principle / After Effects / Motion / Trapcode Particular / Red Giant Suite / 3D / Sound Design.
+        </ProjectInfo>
 
         <WhereTo>
           <img src={contentMid1} alt="" />
           <img src={contentMid1} alt="" />
           <img src={contentMid1} alt="" />
         </WhereTo>
+
+        <Thumbnail src={contentMid1} alt="">
+          <span>
+            Your Channel<br />
+            BBC iPlayer
+          </span>
+        </Thumbnail>
       </Layout>
     </BreakpointProvider>
   </ThemeProvider>

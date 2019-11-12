@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { Row, Col } from '../../components/Grid';
-import Heading from '../../components/Heading';
-import VerticalSpacing from '../../components/VerticalSpacing';
+import { Row, Col } from '../Grid';
+import Heading from '../Heading';
+import VerticalSpacing from '../VerticalSpacing';
 
 const Intro = styled(props => (
   <div className={props.className}>

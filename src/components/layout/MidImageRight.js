@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { Media } from '../../components/Media';
-import { Row, Col } from '../../components/Grid';
-import Heading from '../../components/Heading';
-import VerticalSpacing from '../../components/VerticalSpacing';
+import { Media } from '../Media';
+import { Row, Col } from '../Grid';
+import Heading from '../Heading';
+import VerticalSpacing from '../VerticalSpacing';
 
 // Todo: use Gatsby Image
 
