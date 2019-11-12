@@ -21,6 +21,7 @@ const SmallImg = styled(props => (
   display: flex;
   justify-content: center;
   padding: 30px;
+  margin: 30px 0;
   background-color: ${props => props.dark
     ? props.theme.colors.darkGrey
     : props.theme.colors.silverGrey

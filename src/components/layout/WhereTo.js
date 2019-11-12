@@ -46,8 +46,8 @@ Item.propTypes = {
   isLastChild: PropTypes.bool
 };
 
-const WhereTo = props => (
-  <div>
+const WhereTo = styled(props => (
+  <div className={props.className}>
     <Heading
       headingLevel={2}
       type="main"
@@ -78,6 +78,8 @@ const WhereTo = props => (
       ))}
     </Row>
   </div>
-);
+))`
+  margin: 70px 0;
+`;
 
 export default WhereTo;

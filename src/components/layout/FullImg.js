@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 // Todo: Use gatsby-image
-const FullImg = styled.img``;
+const FullImg = styled.img`
+  margin: 30px 0;
+`;
 
 FullImg.propTypes = {
   src: PropTypes.string.isRequired,

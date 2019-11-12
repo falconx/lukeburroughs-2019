@@ -6,8 +6,6 @@ import {
 
 import { GridStyles } from '../components/Grid';
 import Layout from '../components/layout/Layout';
-import Spacer from '../components/Spacer';
-import VerticalSpacing from '../components/VerticalSpacing';
 import SEO from '../components/Seo';
 import { BreakpointProvider } from '../components/Media';
 
@@ -179,8 +177,6 @@ const IndexPage = () => (
           </p>
         </Intro>
 
-        <Spacer />
-
         <MidImageRight
           caption="Caption title"
           image={{
@@ -195,11 +191,7 @@ const IndexPage = () => (
           </p>
         </MidImageRight>
 
-        <VerticalSpacing size={3} />
-
         <FullImg src={dImgFull} alt="" />
-
-        <VerticalSpacing size={3} />
 
         <SmallImg
           imageLeft={{
@@ -211,8 +203,6 @@ const IndexPage = () => (
             alt: ''
           }}
         />
-
-        <VerticalSpacing size={3} />
 
         <SmallImg
           dark
@@ -225,8 +215,6 @@ const IndexPage = () => (
             alt: ''
           }}
         />
-
-        <VerticalSpacing size={3} />
 
         <MidImageLeft
           caption="Caption title"
