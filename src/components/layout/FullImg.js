@@ -1,19 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import Image from 'gatsby-image/withIEPolyfill';
 
-// Todo: Use gatsby-image
-const FullImg = styled.img`
+const FullImg = styled(props => (
+  <div className={props.className}>
+  	<Image fluid={props.image} />
+  </div>
+))`
   margin: 30px 0;
 `;
 
 FullImg.propTypes = {
-  src: PropTypes.string.isRequired,
-  alt: PropTypes.string
-};
-
-FullImg.defaultProps = {
-  alt: ''
+  image: PropTypes.object.isRequired
 };
 
 export default FullImg;

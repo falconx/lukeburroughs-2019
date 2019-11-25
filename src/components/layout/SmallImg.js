@@ -1,25 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import Image from 'gatsby-image/withIEPolyfill';
 
 import { Row, Col } from '../Grid';
-
-// Todo: use Gatsby Image
 
 const SmallImg = styled(props => (
   <div className={props.className}>
     <Row gutter={20}>
       <Col xs={24} sm={12}>
-        <img {...props.imageLeft} />
+        <Image fluid={props.imageLeft} />
       </Col>
       <Col xs={24} sm={12}>
-        <img {...props.imageRight} />
+        <Image fluid={props.imageRight} />
       </Col>
     </Row>
   </div>
 ))`
-  display: flex;
-  justify-content: center;
   padding: 30px;
   margin: 30px 0;
   background-color: ${props => props.dark
@@ -38,14 +35,8 @@ const SmallImg = styled(props => (
 
 SmallImg.propTypes = {
   dark: PropTypes.bool,
-  imageLeft: PropTypes.shape({
-    src: PropTypes.string.isRequired,
-    alt: PropTypes.string.isRequired
-  }).isRequired,
-  imageRight: PropTypes.shape({
-    src: PropTypes.string.isRequired,
-    alt: PropTypes.string.isRequired
-  }).isRequired,
+  imageLeft: PropTypes.object.isRequired,
+  imageRight: PropTypes.object.isRequired,
 };
 
 export default SmallImg;

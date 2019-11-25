@@ -1,15 +1,14 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
-import styled, { keyframes } from 'styled-components';
+import styled, { withTheme, keyframes } from 'styled-components';
+import Image from 'gatsby-image/withIEPolyfill';
 
 import { Media } from '../Media';
 import VerticalSpacing from '../VerticalSpacing';
 
-import Hero from './Hero';
 import LargeNavLinks from './nav/LargeNavLinks';
 import CompactNavLinks from './nav/CompactNavLinks';
 
-import hero from '../../images/ff8-hero.png';
 import logoLight from '../../images/logo-light.png';
 import logoDark from '../../images/logo-dark.png';
 
@@ -37,9 +36,15 @@ const slideIn = keyframes`
 
 const Header = styled.header`
   position: relative;
+  min-height: ${props => props.theme.layout.navHeight.xs}px;
+
+  ${props => props.theme.query.md} {
+    min-height: ${props => props.theme.layout.navHeight.md}px;
+  }
 `;
 
-const Main = styled.main`
+const Constrain = styled.div`
+  position: relative;
   padding: 0 10px;
   margin: 0 auto;
   max-width: ${props => props.theme.layout.constrain}px;
@@ -242,10 +247,7 @@ const Copyright = styled.small`
   }
 `;
 
-// Todo: prevent tabbing to Drawer when closed
-// Todo: Drawer ARIA + container tabbing
-
-const Layout = ({ children }) => {
+const Layout = ({ hero, theme, children }) => {
   const headerEl = useRef(null);
 
   const [showDrawer, setShowDrawer] = useState(false);
@@ -316,21 +318,34 @@ const Layout = ({ children }) => {
             </Nav>
           )}
         </Media>
-        
-        <Hero src={hero} alt="" />
+
+        {hero && (
+          <Image
+            fluid={hero}
+            objectFit="cover"
+            objectPosition="top center"
+            style={{
+              height: '100vh',
+              width: '100%',
+            }}
+          />
+        )}
       </Header>
 
       <VerticalSpacing size={3} />
 
-      <Main>
-        {children}
-      </Main>
+      <main role="main">
+        <Constrain>
+          {children}
+        </Constrain>
+      </main>
     </React.Fragment>
   );
 }
 
 Layout.propTypes = {
+  theme: PropTypes.object.isRequired,
   children: PropTypes.node.isRequired,
 };
 
-export default Layout;
+export default withTheme(Layout);

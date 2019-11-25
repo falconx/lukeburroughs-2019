@@ -50,7 +50,7 @@ const WhereTo = styled(props => (
   <div className={props.className}>
     <Heading
       headingLevel={2}
-      type="main"
+      type="secondary"
     >Where To?</Heading>
 
     <Spacer />

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   ThemeProvider,
   createGlobalStyle,
@@ -9,22 +10,8 @@ import Layout from '../components/layout/Layout';
 import SEO from '../components/Seo';
 import { BreakpointProvider } from '../components/Media';
 
-import FullImg from '../components/layout/FullImg';
-import Intro from '../components/layout/Intro';
-import MidImageLeft from '../components/layout/MidImageLeft';
-import MidImageRight from '../components/layout/MidImageRight';
-import SmallImg from '../components/layout/SmallImg';
-import ProjectInfo from '../components/layout/ProjectInfo';
-import WhereTo from '../components/layout/WhereTo';
-import Thumbnail from '../components/layout/Thumbnail';
-
 import matterRegular from '../fonts/MatterTRIAL-Regular.otf';
 import matterMedium from '../fonts/MatterTRIAL-Medium.otf';
-
-import dMidImageRight from '../images/content-mid-1.jpg';
-import dImgFull from '../images/content-full-1.jpg';
-import dSmallImage from '../images/content-small-1.jpg';
-import contentMid1 from '../images/content-mid-1@3x.png';
 
 import theme from '../theme';
 
@@ -157,102 +144,25 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
-const IndexPage = () => (
+const IndexPage = props => (
   <ThemeProvider theme={theme}>
     <BreakpointProvider>
-      <Layout>
+      <Layout
+        hero={props.hero}
+      >
         <SEO title="Home" />
 
         <GlobalStyles />
         <GridStyles />
 
-        <Intro
-          caption="The Challenge"
-          title={<span>It’s twenty years&mdash;<br />twenty years too long</span>}
-        >
-          <p>
-            With its open form and radiating lines, the Plume logomark
-            embodies the limitless adaptability of the Plume experience.
-            The modular, hexagonal geometry of the mark is reminiscent of
-            both structural and molecular
-          </p>
-        </Intro>
-
-        <MidImageRight
-          caption="Caption title"
-          image={{
-            src: dMidImageRight,
-            alt: ''
-          }}
-        >
-          <p>
-            Logomark embodies the limitless adaptability of the Plume experience.
-            The modular, hexagonal geometry of the mark is reminiscent of both
-            structural and molecularThe modular, hexagonal geometry of tgsdgs
-          </p>
-        </MidImageRight>
-
-        <FullImg src={dImgFull} alt="" />
-
-        <SmallImg
-          imageLeft={{
-            src: dSmallImage,
-            alt: ''
-          }}
-          imageRight={{
-            src: dSmallImage,
-            alt: ''
-          }}
-        />
-
-        <SmallImg
-          dark
-          imageLeft={{
-            src: dSmallImage,
-            alt: ''
-          }}
-          imageRight={{
-            src: dSmallImage,
-            alt: ''
-          }}
-        />
-
-        <MidImageLeft
-          caption="Caption title"
-          image={{
-            src: dMidImageRight,
-            alt: ''
-          }}
-        >
-          <p>
-            Logomark embodies the limitless adaptability of the Plume experience.
-            The modular, hexagonal geometry of the mark is reminiscent of both
-            structural and molecularThe modular, hexagonal geometry of tgsdgs
-          </p>
-        </MidImageLeft>
-
-        <ProjectInfo
-          caption="Caption goes here!"
-        >
-          Awaken Sounds: 2018—2019<br />
-          Client—Self Initiated + Soundcloud / Brand Systems / Interaction Design / Principle / After Effects / Motion / Trapcode Particular / Red Giant Suite / 3D / Sound Design.
-        </ProjectInfo>
-
-        <WhereTo>
-          <img src={contentMid1} alt="" />
-          <img src={contentMid1} alt="" />
-          <img src={contentMid1} alt="" />
-        </WhereTo>
-
-        <Thumbnail src={contentMid1} alt="">
-          <span>
-            Your Channel<br />
-            BBC iPlayer
-          </span>
-        </Thumbnail>
+        {props.children}
       </Layout>
     </BreakpointProvider>
   </ThemeProvider>
 );
+
+IndexPage.propTypes = {
+  hero: PropTypes.object,
+}
 
 export default IndexPage;

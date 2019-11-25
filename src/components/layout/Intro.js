@@ -18,7 +18,7 @@ const Intro = styled(props => (
       <Col xs={24} lg={18}>
         <Heading
           headingLevel={1}
-          type="main"
+          type="secondary"
         >{props.title}</Heading>
 
         <VerticalSpacing size={3} />

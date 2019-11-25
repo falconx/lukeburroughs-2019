@@ -1,21 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import Image from 'gatsby-image/withIEPolyfill';
 
 import Heading from '../Heading';
 import VerticalSpacing from '../VerticalSpacing';
 
-// Todo: use Gatsby Image
-
 const Thumbnail = styled(props => (
   <div className={props.className}>
-    <img src={props.src} alt={props.alt} />
+    <Image fluid={props.image} />
 
     <VerticalSpacing size={1} />
 
     <Heading
       headingLevel={2}
-      type="main"
+      type="secondary"
     >
       {props.children}
     </Heading>
@@ -25,8 +24,7 @@ const Thumbnail = styled(props => (
 `;
 
 Thumbnail.propTypes = {
-  src: PropTypes.string.isRequired,
-  alt: PropTypes.string.isRequired,
+  image: PropTypes.object.isRequired,
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired
 }
 

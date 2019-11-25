@@ -17,11 +17,24 @@ const Heading = ({ headingLevel, ...props }) => {
 
 Heading.propTypes = {
   headingLevel: PropTypes.oneOf([1, 2, 3, 4, 5, 6]).isRequired,
-  type: PropTypes.oneOf(['main', 'caption']).isRequired,
+  type: PropTypes.oneOf(['main', 'secondary', 'caption']).isRequired,
 };
 
 export default styled(Heading)`
   ${props => props.type === 'main' && `
+    font-size: 3.125rem;
+    line-height: 1;
+
+    ${props.theme.query.md} {
+      font-size: 4.375rem;
+    }
+
+    ${props.theme.query.lg} {
+      font-size: 8.125rem;
+    }
+  `}
+
+  ${props => props.type === 'secondary' && `
     font-size: 2.5rem;
     font-weight: 500;
     line-height: 1;
