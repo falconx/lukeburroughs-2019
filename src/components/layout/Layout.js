@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import styled, { withTheme, keyframes } from 'styled-components';
 import Image from 'gatsby-image/withIEPolyfill';
 
+import Plyr from 'plyr';
+import 'plyr/dist/plyr.css';
+
 import { Media } from '../Media';
 import VerticalSpacing from '../VerticalSpacing';
 
@@ -247,13 +250,32 @@ const Copyright = styled.small`
   }
 `;
 
-const Layout = ({ hero, theme, children }) => {
+const Video = styled.video`
+  object-fit: cover;
+  height: 100vh !important;
+`;
+
+const Layout = ({ hero, video, theme, children }) => {
   const headerEl = useRef(null);
 
   const [showDrawer, setShowDrawer] = useState(false);
   const [stickyOffset, setStickyOffset] = useState();
   const [isSticky, setIsSticky] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  const player = new Plyr(document.getElementById('plyr'), {
+    // title: 'Todo',
+    controls: false,
+    autoplay: true,
+    clickToPlay: false,
+    loop: {
+      active: true,
+    },
+    fullscreen: {
+      enabled: false,
+      fallback: false,
+    },
+  });
 
   useLayoutEffect(() => {
     setStickyOffset(headerEl.current.offsetHeight);
@@ -280,7 +302,7 @@ const Layout = ({ hero, theme, children }) => {
           {mq => (
             <Nav
               stickyOffset={stickyOffset}
-              onSetIsSticky={isSticky => setIsSticky(isSticky)}
+              onSetIsSticky={setIsSticky}
               isDrawerOpen={showDrawer}
             >
               <NavContent>
@@ -330,6 +352,13 @@ const Layout = ({ hero, theme, children }) => {
             }}
           />
         )}
+
+        {!hero && video && video.mp4 && (
+          <Video
+            src={video.mp4}
+            id="plyr"
+          />
+        )}
       </Header>
 
       <VerticalSpacing size={3} />
@@ -344,6 +373,11 @@ const Layout = ({ hero, theme, children }) => {
 }
 
 Layout.propTypes = {
+  hero: PropTypes.object,
+  video: PropTypes.shape({
+    mp4: PropTypes.string,
+    webm: PropTypes.string,
+  }),
   theme: PropTypes.object.isRequired,
   children: PropTypes.node.isRequired,
 };

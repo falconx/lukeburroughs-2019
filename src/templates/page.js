@@ -2,6 +2,10 @@ import React from 'react';
 
 import IndexPage from '../pages/index';
 
+import { Row, Col } from '../components/Grid';
+import TextSquare from '../components/TextSquare';
+
+import Spacer from '../components/layout/Spacer';
 import Intro from '../components/layout/Intro';
 import FullImg from '../components/layout/FullImg';
 import MidImageLeft from '../components/layout/MidImageLeft';
@@ -11,13 +15,13 @@ import ProjectInfo from '../components/layout/ProjectInfo';
 import WhereTo from '../components/layout/WhereTo';
 import Thumbnail from '../components/layout/Thumbnail';
 
-// import dMidImageRight from '../images/content-mid-1.jpg';
-// import dImgFull from '../images/content-full-1.jpg';
-// import dSmallImage from '../images/content-small-1.jpg';
 import contentMid1 from '../images/content-mid-1@3x.png';
 
 const LAYOUT_12 = 'WordPressAcf_1_column_12';
+const LAYOUT_6_6 = 'WordPressAcf_2_column_6_6';
+const LAYOUT_2_8 = 'WordPressAcf_2_column_2_8';
 
+const COMPONENT_SPACER = 'spacer';
 const COMPONENT_INTRO = 'intro';
 const COMPONENT_FULL_IMG = 'full_img';
 const COMPONENT_MID_IMAGE_LEFT = 'mid_image_left';
@@ -27,9 +31,11 @@ const COMPONENT_SMALL_IMG = 'small_img';
 const COMPONENT_THUMBNAIL = 'thumbnail';
 const COMPONENT_WHERE_TO = 'where_to';
 
-const MODE_DARK = 'Dark';
+const COMPONENT_TITLE = 'title';
+const COMPONENT_CAPTION = 'caption';
+const COMPONENT_TEXT = 'text';
 
-// acf_fc_layout
+const MODE_DARK = 'Dark';
 
 // "Ignore" hack added as a workaround to https://github.com/gatsbyjs/gatsby/issues/15707
 // 
@@ -39,6 +45,18 @@ export const query = graphql`
     wordpressPage(id: { eq: $id }) {
       title
       acf {
+        video {
+          mp4_video {
+            localFile {
+              publicURL
+            }
+          }
+          webm_video {
+            localFile {
+              publicURL
+            }
+          }
+        }
         image {
           localFile {
             childImageSharp {
@@ -88,6 +106,72 @@ export const query = graphql`
               }
             }
           }
+          ... on WordPressAcf_2_column_6_6 {
+            internal {
+              type
+            }
+            left_content_multi_column_components {
+              acf_fc_layout
+              text
+              title
+              image {
+                localFile {
+                  childImageSharp {
+                    fluid {
+                      ...GatsbyImageSharpFluid
+                    }
+                  }
+                }
+              }
+            }
+            right_content_multi_column_components {
+              acf_fc_layout
+              text
+              title
+              image {
+                localFile {
+                  childImageSharp {
+                    fluid {
+                      ...GatsbyImageSharpFluid
+                    }
+                  }
+                }
+              }
+            }
+          }
+          ... on WordPressAcf_2_column_2_8 {
+            internal {
+              type
+            }
+            left_content_multi_column_components {
+              acf_fc_layout
+              text
+              title
+              image {
+                localFile {
+                  childImageSharp {
+                    fluid {
+                      ...GatsbyImageSharpFluid
+                    }
+                  }
+                }
+              }
+            }
+            right_content_multi_column_components {
+              acf_fc_layout
+              text
+              title
+              image {
+                localFile {
+                  childImageSharp {
+                    fluid {
+                      ...GatsbyImageSharpFluid
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -98,11 +182,40 @@ const Page = props => {
   const page = props.data.wordpressPage;
   const layouts = page.acf.layout_page || [];
 
-  const hero = page.acf.image && page.acf.image.localFile.childImageSharp.fluid;
+  const heroImage = page.acf.image && page.acf.image.localFile.childImageSharp.fluid;
+  const heroVideo = page.acf.video && {
+    mp4: page.acf.video.mp4_video.localFile.publicURL,
+    webm: page.acf.video.webm_video.localFile.publicURL,
+  };
 
   const renderComponents = (components = []) => {
     return components.map((component, index) => {
       switch (component.acf_fc_layout) {
+        case COMPONENT_TITLE:
+          return <div key={index}>{component.text}</div>;
+
+        case COMPONENT_CAPTION:
+          return (
+            <TextSquare key={index}>
+              {component.text}
+            </TextSquare>
+          );
+
+        case COMPONENT_TEXT:
+          return (
+            <div
+              key={index}
+              dangerouslySetInnerHTML={{
+                __html: component.text
+              }}
+            />
+          );
+
+        case COMPONENT_SPACER:
+          return (
+            <Spacer key={index} />
+          );
+
         case COMPONENT_INTRO:
           return (
             <Intro
@@ -198,10 +311,36 @@ const Page = props => {
     });
   };
 
-  const renderLayout = (type, components) => {
+  const renderLayout = (type, components = []) => {
     switch (type) {
       case LAYOUT_12:
         return renderComponents(components);
+
+      case LAYOUT_6_6: {
+        return (
+          <Row gutter={20}>
+            <Col xs={24} sm={12}>
+              {renderComponents(components[0])}
+            </Col>
+            <Col xs={24} sm={12}>
+              {renderComponents(components[1])}
+            </Col>
+          </Row>
+        );
+      }
+
+      case LAYOUT_2_8: {
+        return (
+          <Row gutter={20}>
+            <Col xs={24} sm={4}>
+              {renderComponents(components[0])}
+            </Col>
+            <Col xs={24} sm={16}>
+              {renderComponents(components[1])}
+            </Col>
+          </Row>
+        );
+      }
 
       default:
         return null;
@@ -210,16 +349,23 @@ const Page = props => {
 
   return (
     <IndexPage
-      hero={hero}
+      hero={heroImage}
+      video={heroVideo}
     >
-      {layouts.map(layout => {
+      {layouts.map((layout, index) => {
         const type = layout.internal && layout.internal.type;
 
         if (!type) {
           return null;
         }
 
-        return renderLayout(type, layout.components);
+        const components = layout.components || [layout.left_content_multi_column_components, layout.right_content_multi_column_components];
+
+        return (
+          <div key={index}>
+            {renderLayout(type, components)}
+          </div>
+        );
       })}
     </IndexPage>
   );

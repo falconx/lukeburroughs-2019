@@ -149,6 +149,7 @@ const IndexPage = props => (
     <BreakpointProvider>
       <Layout
         hero={props.hero}
+        video={props.video}
       >
         <SEO title="Home" />
 
@@ -163,6 +164,10 @@ const IndexPage = props => (
 
 IndexPage.propTypes = {
   hero: PropTypes.object,
+  video: PropTypes.shape({
+    mp4: PropTypes.string,
+    webm: PropTypes.string,
+  }),
 }
 
 export default IndexPage;
