@@ -1,19 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
+import styled, {
   ThemeProvider,
   createGlobalStyle,
 } from 'styled-components';
+import Image from 'gatsby-image/withIEPolyfill';
+import chunk from 'lodash/chunk';
 
-import { GridStyles } from '../components/Grid';
+import { GridStyles, Row, Col } from '../components/Grid';
+import TextSquare from '../components/TextSquare';
+import Text from '../components/Text';
 import Layout from '../components/layout/Layout';
+import WhereTo from '../components/layout/WhereTo';
+import Spacer from '../components/layout/Spacer';
 import SEO from '../components/Seo';
-import { BreakpointProvider } from '../components/Media';
+import { Media, BreakpointProvider } from '../components/Media';
+import VerticalSpacing from '../components/VerticalSpacing';
 
 import matterRegular from '../fonts/MatterTRIAL-Regular.otf';
 import matterMedium from '../fonts/MatterTRIAL-Medium.otf';
 
 import theme from '../theme';
+
+import placeholder from '../images/content-mid-1@3x.png';
+
+const TYPE_DEFAULT = 'Default';
+const TYPE_HOME = 'Home';
+const TYPE_ABOUT = 'About';
+const TYPE_CASE_STUDY = 'Case Study';
+
+const NAV_TRANSPARENT = 'transparent';
+const NAV_LIGHT = 'light';
+const NAV_DARK = 'dark';
 
 const GlobalStyles = createGlobalStyle`
   @font-face {
@@ -144,30 +162,185 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
-const IndexPage = props => (
-  <ThemeProvider theme={theme}>
-    <BreakpointProvider>
-      <Layout
-        hero={props.hero}
-        video={props.video}
-      >
-        <SEO title="Home" />
+const Logo = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 130px;
+  margin-bottom: 10px;
 
-        <GlobalStyles />
-        <GridStyles />
+  ${props => props.theme.query.md} {
+    height: 180px;
+    margin-bottom: 30px;
+  }
+`;
 
-        {props.children}
-      </Layout>
-    </BreakpointProvider>
-  </ThemeProvider>
+const HomeIntro = () => (
+  <React.Fragment>
+    <Row gutter={20}>
+      <Col xs={24} md={4}>
+        Luke Burroughs
+      </Col>
+      <Col xs={24} md={16}>
+        2017&mdash;present
+      </Col>
+    </Row>
+
+    <Spacer />
+
+    <Row gutter={20}>
+      <Col xs={24} md={4}>
+        <TextSquare /> Mission
+      </Col>
+      <Col xs={24} md={16}>
+        <h2>
+          <Text type="secondary">
+            Create opportunities for brands and individuals to tell
+            their stories in ways we haven’t heard before.
+          </Text>
+        </h2>
+      </Col>
+    </Row>
+  </React.Fragment>
 );
 
+const IndexPage = props => {
+  const navBackground = (() => {
+    switch (props.pageType) {
+      case TYPE_ABOUT:
+        return NAV_LIGHT;
+
+      default:
+        return;
+    }
+  })();
+
+  const navStickyBackground = (() => {
+    switch (props.pageType) {
+      case TYPE_ABOUT:
+        return NAV_LIGHT;
+
+      case TYPE_HOME:
+        return NAV_DARK;
+
+      case TYPE_CASE_STUDY:
+        return NAV_LIGHT;
+
+      default:
+        return;
+    }
+  })();
+
+  return (
+    <ThemeProvider theme={theme}>
+      <BreakpointProvider>
+        <Layout
+          hero={props.hero}
+          navBackground={navBackground}
+          navStickyBackground={navStickyBackground}
+        >
+          <SEO title="Home" />
+
+          <GlobalStyles />
+          <GridStyles />
+
+          {props.pageType === TYPE_HOME && (
+            <HomeIntro />
+          )}
+
+          {props.children}
+
+          {props.pageType === TYPE_CASE_STUDY && (
+            <WhereTo>
+              <img src={placeholder} alt="" />
+              <img src={placeholder} alt="" />
+              <img src={placeholder} alt="" />
+            </WhereTo>
+          )}
+
+          {props.pageType === TYPE_ABOUT && props.imageList.length ? (
+            <React.Fragment>
+              {props.title && (
+                <React.Fragment>
+                  <h2>
+                    <Text type="secondary">
+                      <span dangerouslySetInnerHTML={{
+                        __html: props.title,
+                      }} />
+                    </Text>
+                  </h2>
+                  <VerticalSpacing size={3} />
+                </React.Fragment>
+              )}
+
+              <Media>
+                {mq => (
+                  <React.Fragment>
+                    {chunk(props.imageList, mq.lte('sm') ? 2 : 4).map((list, index) => (
+                      <Row key={index} gutter={20} type="flex" justify="center">
+                        {list.map((image, index) => (
+                          <Col key={index} xs={12} md={6}>
+                            <Logo>
+                              <Image
+                                fluid={image}
+                                style={{
+                                  width: mq.lte('sm') ? '90px' : '135px',
+                                }}
+                              />
+                            </Logo>
+                          </Col>
+                        ))}
+                      </Row>
+                    ))}
+                  </React.Fragment>
+                )}
+              </Media>
+            </React.Fragment>
+          ) : null}
+
+          {[TYPE_DEFAULT, TYPE_CASE_STUDY, TYPE_ABOUT].includes(props.pageType) && (
+            <div>
+              <Spacer />
+
+              <h2>
+                <Text type="secondary">Project in mind?</Text>
+              </h2>
+
+              <a href="mailto:hi@unheard.design">
+                <Text type="secondary">hi@unheard.design</Text>
+              </a>
+
+              <Spacer />
+            </div>
+          )}
+        </Layout>
+      </BreakpointProvider>
+    </ThemeProvider>
+  );
+};
+
 IndexPage.propTypes = {
-  hero: PropTypes.object,
-  video: PropTypes.shape({
-    mp4: PropTypes.string,
-    webm: PropTypes.string,
+  pageType: PropTypes.oneOf([
+    TYPE_DEFAULT,
+    TYPE_HOME,
+    TYPE_ABOUT,
+    TYPE_CASE_STUDY,
+  ]),
+  hero: PropTypes.shape({
+    text: PropTypes.string,
+    image: PropTypes.object,
+    video: PropTypes.shape({
+      mp4: PropTypes.string,
+      webm: PropTypes.string,
+    }),
   }),
-}
+  /* About page props for brand list */
+  title: PropTypes.string,
+  imageList: PropTypes.array,
+};
+
+IndexPage.defaultProps = {
+  imageList: [],
+};
 
 export default IndexPage;

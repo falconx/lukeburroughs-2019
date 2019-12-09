@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+const BACKGROUND_LIGHT = 'light';
+const BACKGROUND_DARK = 'dark';
+
 const NavList = styled.ul`
   display: flex;
 `;
@@ -42,7 +45,11 @@ const NavLink = styled.a.attrs(props => ({
   }
 
   ${props => props.active && `
-    color: ${props.isSticky ? props.theme.colors.black : '#fff'};
+    color: ${props.background === BACKGROUND_LIGHT
+      ? props.theme.colors.black
+      : '#fff'
+    };
+
     font-weight: 500;
     border-bottom-color: currentColor;
   `}
@@ -59,25 +66,35 @@ const LargeNavList = props => (
         href="/"
         active
         isSticky={props.isSticky}
+        background={props.background}
       >Work</NavLink>
     </NavListItem>
     <NavListItem>
       <NavLink
         href="/"
         isSticky={props.isSticky}
+        background={props.background}
       >Process</NavLink>
     </NavListItem>
     <NavListItem>
       <NavLink
         href="/"
         isSticky={props.isSticky}
+        background={props.background}
       >About</NavLink>
     </NavListItem>
   </NavList>
 );
 
 LargeNavList.propTypes = {
-  isSticky: PropTypes.bool
+  background: PropTypes.oneOf([
+    BACKGROUND_LIGHT,
+    BACKGROUND_DARK,
+  ]),
+};
+
+LargeNavList.defaultProps = {
+  background: BACKGROUND_LIGHT,
 };
 
 export default LargeNavList;

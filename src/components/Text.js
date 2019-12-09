@@ -3,27 +3,30 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import TextSquare from './TextSquare';
+import ConditionalWrap from './ConditionalWrap';
 
-const Heading = ({ headingLevel, ...props }) => {
-  const children = (props.type === 'caption')
-    ? <TextSquare>{props.children}</TextSquare>
-    : props.children;
+const Text = ({ headingLevel, ...props }) => (
+  <span className={props.className}>
+    <ConditionalWrap
+      condition={props.type === 'caption'}
+      wrap={children => (
+        <TextSquare children={children} />
+      )}
+      children={props.children}
+    />
+  </span>
+);
 
-  return React.createElement(`h${headingLevel}`, {
-    ...props,
-    children
-  });
-};
-
-Heading.propTypes = {
-  headingLevel: PropTypes.oneOf([1, 2, 3, 4, 5, 6]).isRequired,
+Text.propTypes = {
   type: PropTypes.oneOf(['main', 'secondary', 'caption']).isRequired,
 };
 
-export default styled(Heading)`
+export default styled(Text)`
   ${props => props.type === 'main' && `
     font-size: 3.125rem;
+    font-weight: 500;
     line-height: 1;
+    letter-spacing: -1.8px;
 
     ${props.theme.query.md} {
       font-size: 4.375rem;

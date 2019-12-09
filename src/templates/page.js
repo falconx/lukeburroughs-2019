@@ -1,9 +1,10 @@
 import React from 'react';
+import { graphql } from 'gatsby';
+import get from 'lodash/get';
 
 import IndexPage from '../pages/index';
 
 import { Row, Col } from '../components/Grid';
-import TextSquare from '../components/TextSquare';
 
 import Spacer from '../components/layout/Spacer';
 import Intro from '../components/layout/Intro';
@@ -12,14 +13,14 @@ import MidImageLeft from '../components/layout/MidImageLeft';
 import MidImageRight from '../components/layout/MidImageRight';
 import SmallImg from '../components/layout/SmallImg';
 import ProjectInfo from '../components/layout/ProjectInfo';
-import WhereTo from '../components/layout/WhereTo';
 import Thumbnail from '../components/layout/Thumbnail';
+import Title from '../components/layout/Title';
+import SubTitle from '../components/layout/SubTitle';
+import MultiColumnText from '../components/layout/MultiColumnText';
 
-import contentMid1 from '../images/content-mid-1@3x.png';
-
-const LAYOUT_12 = 'WordPressAcf_1_column_12';
-const LAYOUT_6_6 = 'WordPressAcf_2_column_6_6';
-const LAYOUT_2_8 = 'WordPressAcf_2_column_2_8';
+const LAYOUT_FULL_WIDTH = 'WordPressAcf_full_width';
+const LAYOUT_MULTI_COLUMN_TEXT = 'WordPressAcf_multi_column_text';
+const LAYOUT_THUMBNAILS = 'WordPressAcf_thumbnails';
 
 const COMPONENT_SPACER = 'spacer';
 const COMPONENT_INTRO = 'intro';
@@ -29,34 +30,20 @@ const COMPONENT_MID_IMAGE_RIGHT = 'mid_image_right';
 const COMPONENT_PROJECT_INFO = 'project_info';
 const COMPONENT_SMALL_IMG = 'small_img';
 const COMPONENT_THUMBNAIL = 'thumbnail';
-const COMPONENT_WHERE_TO = 'where_to';
-
 const COMPONENT_TITLE = 'title';
-const COMPONENT_CAPTION = 'caption';
-const COMPONENT_TEXT = 'text';
+const COMPONENT_SUB_TITLE = 'sub_title';
 
 const MODE_DARK = 'Dark';
 
 // "Ignore" hack added as a workaround to https://github.com/gatsbyjs/gatsby/issues/15707
-// 
-// act.image => hero
 export const query = graphql`
   query($id: String!) {
     wordpressPage(id: { eq: $id }) {
       title
       acf {
-        video {
-          mp4_video {
-            localFile {
-              publicURL
-            }
-          }
-          webm_video {
-            localFile {
-              publicURL
-            }
-          }
-        }
+        page_type
+        text
+        title
         image {
           localFile {
             childImageSharp {
@@ -66,8 +53,19 @@ export const query = graphql`
             }
           }
         }
+        image_list {
+          images {
+            localFile {
+              childImageSharp {
+                fluid(maxWidth: 135) {
+                  ...GatsbyImageSharpFluid
+                }
+              }
+            }
+          }
+        }
         layout_page {
-          ... on WordPressAcf_1_column_12 {
+          ... on WordPressAcf_full_width {
             internal {
               type
             }
@@ -106,71 +104,43 @@ export const query = graphql`
               }
             }
           }
-          ... on WordPressAcf_2_column_6_6 {
+          ... on WordPressAcf_thumbnails {
             internal {
               type
             }
-            left_content_multi_column_components {
-              acf_fc_layout
-              text
-              title
-              image {
-                localFile {
-                  childImageSharp {
-                    fluid {
-                      ...GatsbyImageSharpFluid
-                    }
+            left_image {
+              localFile {
+                childImageSharp {
+                  fluid {
+                    ...GatsbyImageSharpFluid
                   }
                 }
               }
             }
-            right_content_multi_column_components {
-              acf_fc_layout
-              text
-              title
-              image {
-                localFile {
-                  childImageSharp {
-                    fluid {
-                      ...GatsbyImageSharpFluid
-                    }
+            right_image {
+              localFile {
+                childImageSharp {
+                  fluid {
+                    ...GatsbyImageSharpFluid
                   }
                 }
               }
             }
+            left_title
+            right_title
           }
-          ... on WordPressAcf_2_column_2_8 {
+          ... on WordPressAcf_multi_column_text {
             internal {
               type
             }
-            left_content_multi_column_components {
-              acf_fc_layout
-              text
-              title
-              image {
-                localFile {
-                  childImageSharp {
-                    fluid {
-                      ...GatsbyImageSharpFluid
-                    }
-                  }
-                }
-              }
-            }
-            right_content_multi_column_components {
-              acf_fc_layout
-              text
-              title
-              image {
-                localFile {
-                  childImageSharp {
-                    fluid {
-                      ...GatsbyImageSharpFluid
-                    }
-                  }
-                }
-              }
-            }
+            column_1_block
+            column_1_text
+            column_2_block
+            column_2_text
+            column_3_block
+            column_3_text
+            column_4_block
+            column_4_text
           }
         }
       }
@@ -182,35 +152,15 @@ const Page = props => {
   const page = props.data.wordpressPage;
   const layouts = page.acf.layout_page || [];
 
-  const heroImage = page.acf.image && page.acf.image.localFile.childImageSharp.fluid;
-  const heroVideo = page.acf.video && {
-    mp4: page.acf.video.mp4_video.localFile.publicURL,
-    webm: page.acf.video.webm_video.localFile.publicURL,
-  };
+  const heroImage = get(page, 'acf.image.localFile.childImageSharp.fluid');
+  // const heroVideo = page.acf.video && {
+  //   mp4: get(page, 'acf.video.mp4_video.localFile.publicURL'),
+  //   webm: get(page, 'acf.video.webm_video.localFile.publicURL'),
+  // };
 
-  const renderComponents = (components = []) => {
+  const renderComponents = components => {
     return components.map((component, index) => {
       switch (component.acf_fc_layout) {
-        case COMPONENT_TITLE:
-          return <div key={index}>{component.text}</div>;
-
-        case COMPONENT_CAPTION:
-          return (
-            <TextSquare key={index}>
-              {component.text}
-            </TextSquare>
-          );
-
-        case COMPONENT_TEXT:
-          return (
-            <div
-              key={index}
-              dangerouslySetInnerHTML={{
-                __html: component.text
-              }}
-            />
-          );
-
         case COMPONENT_SPACER:
           return (
             <Spacer key={index} />
@@ -295,14 +245,21 @@ const Page = props => {
             </Thumbnail>
           );
 
-        // Todo
-        case COMPONENT_WHERE_TO:
+        case COMPONENT_TITLE:
           return (
-            <WhereTo key={index}>
-              <img src={contentMid1} alt="" />
-              <img src={contentMid1} alt="" />
-              <img src={contentMid1} alt="" />
-            </WhereTo>
+            <Title key={index}>
+              <span dangerouslySetInnerHTML={{
+                __html: component.text
+              }} />
+            </Title>
+          );
+
+        case COMPONENT_SUB_TITLE:
+          return (
+            <SubTitle
+              key={index}
+              children={component.text}
+            />
           );
 
         default:
@@ -311,46 +268,75 @@ const Page = props => {
     });
   };
 
-  const renderLayout = (type, components = []) => {
+  const renderLayout = (type, data, key) => {
     switch (type) {
-      case LAYOUT_12:
-        return renderComponents(components);
+      case LAYOUT_FULL_WIDTH:
+        return renderComponents(data.components || []);
 
-      case LAYOUT_6_6: {
+      case LAYOUT_MULTI_COLUMN_TEXT:
         return (
-          <Row gutter={20}>
-            <Col xs={24} sm={12}>
-              {renderComponents(components[0])}
+          <MultiColumnText
+            key={key}
+            columns={[
+              {
+                // hasBlock: data.column_1_block,
+                text: data.column_1_text,
+              },
+              {
+                // hasBlock: data.column_2_block,
+                text: data.column_2_text,
+              },
+              {
+                // hasBlock: data.column_3_block,
+                text: data.column_3_text,
+              },
+              {
+                // hasBlock: data.column_4_block,
+                text: data.column_4_text,
+              },
+            ]}
+          />
+        );
+
+      case LAYOUT_THUMBNAILS:
+        return (
+          <Row
+            key={key}
+            gutter={20}
+          >
+            <Col xs={24} md={12}>
+              <Thumbnail image={data.left_image.localFile.childImageSharp.fluid}>
+                {data.left_title}
+              </Thumbnail>
             </Col>
-            <Col xs={24} sm={12}>
-              {renderComponents(components[1])}
+            <Col xs={24} md={12}>
+              <Thumbnail image={data.right_image.localFile.childImageSharp.fluid}>
+                {data.right_title}
+              </Thumbnail>
             </Col>
           </Row>
         );
-      }
-
-      case LAYOUT_2_8: {
-        return (
-          <Row gutter={20}>
-            <Col xs={24} sm={4}>
-              {renderComponents(components[0])}
-            </Col>
-            <Col xs={24} sm={16}>
-              {renderComponents(components[1])}
-            </Col>
-          </Row>
-        );
-      }
 
       default:
         return null;
     }
   };
 
+  const imageList =
+    page.acf.image_list &&
+    page.acf.image_list.map(item => item.images.localFile.childImageSharp.fluid);
+
   return (
     <IndexPage
-      hero={heroImage}
-      video={heroVideo}
+      pageType={page.acf.page_type}
+      hero={{
+        image: heroImage,
+        // video: heroVideo,
+        text: page.acf.text,
+      }}
+      // About page props
+      imageList={imageList}
+      title={page.acf.title}
     >
       {layouts.map((layout, index) => {
         const type = layout.internal && layout.internal.type;
@@ -359,13 +345,7 @@ const Page = props => {
           return null;
         }
 
-        const components = layout.components || [layout.left_content_multi_column_components, layout.right_content_multi_column_components];
-
-        return (
-          <div key={index}>
-            {renderLayout(type, components)}
-          </div>
-        );
+        return renderLayout(type, layout, index);
       })}
     </IndexPage>
   );

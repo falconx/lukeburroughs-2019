@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { Row, Col } from '../../components/Grid';
-import Heading from '../../components/Heading';
+import Text from '../../components/Text';
 import TextSquare from '../../components/TextSquare';
 
 const Spacer = styled.div`
@@ -48,10 +48,9 @@ Item.propTypes = {
 
 const WhereTo = styled(props => (
   <div className={props.className}>
-    <Heading
-      headingLevel={2}
-      type="secondary"
-    >Where To?</Heading>
+    <h2>
+      <Text type="secondary">Where To?</Text>
+    </h2>
 
     <Spacer />
 

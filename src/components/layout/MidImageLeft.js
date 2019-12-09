@@ -5,7 +5,7 @@ import Image from 'gatsby-image/withIEPolyfill';
 
 import { Media } from '../Media';
 import { Row, Col } from '../Grid';
-import Heading from '../Heading';
+import Text from '../Text';
 import VerticalSpacing from '../VerticalSpacing';
 
 const MidImageLeft = styled(props => (
@@ -25,10 +25,9 @@ const MidImageLeft = styled(props => (
             )}
           </Col>
           <Col xs={24} lg={6}>
-            <Heading
-              headingLevel={2}
-              type="caption"
-            >{props.caption}</Heading>
+            <h2>
+              <Text type="caption">{props.caption}</Text>
+            </h2>
 
             {props.children}
           </Col>

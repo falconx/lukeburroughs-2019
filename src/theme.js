@@ -12,6 +12,8 @@ theme.layout = {
 
 /* Bootstrap breakpoints to match AntD grid components */
 theme.query = {
+  xs: '@media screen and (max-width: 575px)',
+  sm: '@media screen and (min-width: 576px)',
   md: '@media all and (min-width: 768px)',
   lg: '@media all and (min-width: 992px)',
 };
@@ -26,7 +28,7 @@ theme.colors = {
 export default theme;
 
 /**
- * - Caption/Heading levels?
+ * - Caption/Text levels?
  * - Nav appearance/behaviour
  * - Full width/100vh header?
  * - Hero should have a max-height

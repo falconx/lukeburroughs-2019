@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Image from 'gatsby-image/withIEPolyfill';
 
-import Heading from '../Heading';
+import Text from '../Text';
 import VerticalSpacing from '../VerticalSpacing';
 
 const Thumbnail = styled(props => (
@@ -12,12 +12,11 @@ const Thumbnail = styled(props => (
 
     <VerticalSpacing size={1} />
 
-    <Heading
-      headingLevel={2}
-      type="secondary"
-    >
-      {props.children}
-    </Heading>
+    <h2>
+      <Text type="secondary">
+        {props.children}
+      </Text>
+    </h2>
   </div>
 ))`
   margin: 30px 0;

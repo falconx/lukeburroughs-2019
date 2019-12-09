@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import Heading from '../Heading';
+import Text from '../Text';
 import VerticalSpacing from '../VerticalSpacing';
 
-// duplicates Heading "main"
+// duplicates Text "main"
 const Content = styled.div`
   font-size: 2.5rem;
   font-weight: 500;
@@ -23,10 +23,9 @@ const Content = styled.div`
 
 const ProjectInfo = styled(props => (
   <div className={props.className}>
-    <Heading
-      headingLevel={2}
-      type="caption"
-    >{props.caption}</Heading>
+    <h2>
+      <Text type="caption">{props.caption}</Text>
+    </h2>
 
     <VerticalSpacing size={3} />
 

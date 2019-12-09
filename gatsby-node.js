@@ -28,6 +28,8 @@ exports.createPages = ({ graphql, actions }) => {
     const template = path.resolve('./src/templates/page.js');
 
     postEdges.forEach(edge => {
+      console.log('create page', edge.node.slug);
+
       createPage({
         path: `/${edge.node.slug}`,
         component: template,

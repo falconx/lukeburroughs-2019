@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
-import styled, { withTheme, keyframes } from 'styled-components';
+import styled, { css, withTheme, keyframes } from 'styled-components';
 import Image from 'gatsby-image/withIEPolyfill';
 
 import Plyr from 'plyr';
@@ -9,6 +9,8 @@ import 'plyr/dist/plyr.css';
 import { Media } from '../Media';
 import VerticalSpacing from '../VerticalSpacing';
 
+import Constrain from './Constrain';
+import Footer from './Footer';
 import LargeNavLinks from './nav/LargeNavLinks';
 import CompactNavLinks from './nav/CompactNavLinks';
 
@@ -18,7 +20,17 @@ import logoDark from '../../images/logo-dark.png';
 const SLIDE_IN_DURATION = 1000; // ms
 const FADE_IN_DURATION = 500; // ms
 
-const slideIn = keyframes`
+const NAV_TRANSPARENT = 'transparent';
+const NAV_LIGHT = 'light';
+const NAV_DARK = 'dark';
+
+const navTypes = [
+  NAV_TRANSPARENT,
+  NAV_LIGHT,
+  NAV_DARK,
+];
+
+const slideIn = color => keyframes`
   0% {
     position: absolute;
     transform: translateY(0);
@@ -26,14 +38,14 @@ const slideIn = keyframes`
 
   1% {
     position: fixed;
-    background-color: #fff;
     transform: translateY(-100%);
+    background-color: ${color};
   }
 
   100% {
     position: fixed;
-    background-color: #fff;
     transform: translateY(0);
+    background-color: ${color};
   }
 `;
 
@@ -46,43 +58,60 @@ const Header = styled.header`
   }
 `;
 
-const Constrain = styled.div`
-  position: relative;
-  padding: 0 10px;
-  margin: 0 auto;
-  max-width: ${props => props.theme.layout.constrain}px;
-
-  ${props => props.theme.query.md} {
-    padding: 0 30px;
-  }
-`;
-
 const StyledNav = styled.nav`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1;
-  color: ${props => (!props.isSticky || props.isDrawerOpen) ? '#fff' : props.theme.colors.black};
 
-  animation: ${slideIn} ${SLIDE_IN_DURATION / 1000}s;
-  animation-iteration-count: 1;
-  animation-fill-mode: backwards;
-  animation-direction: reverse;
+  background-color: ${props => {
+    switch (props.background) {
+      case NAV_LIGHT:
+        return '#fff';
 
-  ${props => props.isSticky && `
-    animation-fill-mode: forwards;
-    animation-direction: normal;
+      case NAV_DARK:
+        return props.theme.colors.black;
+
+      default:
+      case NAV_TRANSPARENT:
+        return 'transparent';
+    }
+  }};
+
+  ${props => props.isDrawerOpen && `
+    color: #fff;
   `}
 
-  ${props => props.isInitialRender && `
-    visibility: hidden;
+  ${props => !props.stickyOnScroll && `
+    position: fixed;
+    top: 0;
+    left: 0;
+  `}
+
+  ${props => props.stickyOnScroll && css`
+    animation: ${slideIn(props.stickyBackground === NAV_DARK ? props.theme.colors.black : '#fff')} ${SLIDE_IN_DURATION / 1000}s;
+    animation-iteration-count: 1;
+    animation-fill-mode: backwards;
+    animation-direction: reverse;
+
+    ${props.isSticky && `
+      animation-fill-mode: forwards;
+      animation-direction: normal;
+    `}
+
+    ${props.isInitialRender && `
+      visibility: hidden;
+    `}
   `}
 `;
 
 StyledNav.propTypes = {
   isInitialRender: PropTypes.bool,
   isSticky: PropTypes.bool,
+  background: PropTypes.oneOf(navTypes),
+  stickyBackground: PropTypes.oneOf(navTypes),
+  stickyOnScroll: PropTypes.bool,
 };
 
 const NavContent = styled.div`
@@ -103,15 +132,23 @@ const NavContent = styled.div`
   }
 `;
 
-const Nav = ({ stickyOffset, onSetIsSticky, isDrawerOpen, ...props }) => {
+const Nav = ({
+  stickyOffset,
+  onSetIsSticky,
+  isDrawerOpen,
+  stickyOnScroll,
+  ...props,
+}) => {
   const [isSticky, setIsSticky] = useState(false);
   const [isInitialRender, setIsInitialRender] = useState(true);
 
   const onScroll = () => {
-    setIsSticky(window.pageYOffset > stickyOffset);
+    if (stickyOnScroll) {
+      setIsSticky(window.pageYOffset > stickyOffset);
 
-    if (isSticky !== (window.pageYOffset > stickyOffset)) {
-      onSetIsSticky(window.pageYOffset > stickyOffset);
+      if (isSticky !== (window.pageYOffset > stickyOffset)) {
+        onSetIsSticky(window.pageYOffset > stickyOffset);
+      }
     }
   }
 
@@ -134,6 +171,7 @@ const Nav = ({ stickyOffset, onSetIsSticky, isDrawerOpen, ...props }) => {
       isInitialRender={isInitialRender}
       isSticky={isSticky}
       isDrawerOpen={isDrawerOpen}
+      stickyOnScroll={stickyOnScroll}
       // force re-render to initiate CSS animation
       key={isSticky}
     />
@@ -143,11 +181,16 @@ const Nav = ({ stickyOffset, onSetIsSticky, isDrawerOpen, ...props }) => {
 Nav.propTypes = {
   stickyOffset: PropTypes.number,
   onSetIsSticky: PropTypes.func,
+  background: PropTypes.oneOf(navTypes),
+  stickyBackground: PropTypes.oneOf(navTypes),
+  stickyOnScroll: PropTypes.bool,
 };
 
 Nav.defaultProps = {
   stickyOffset: 0,
   onSetIsSticky: Function.prototype,
+  background: NAV_TRANSPARENT,
+  stickyBackground: NAV_TRANSPARENT,
 };
 
 const Logo = styled.img.attrs({
@@ -255,30 +298,64 @@ const Video = styled.video`
   height: 100vh !important;
 `;
 
-const Layout = ({ hero, video, theme, children }) => {
+const HeroText = styled.div`
+  position: absolute;
+  bottom: 30px;
+  z-index: 100;
+  color: #fff;
+
+  /* Todo: Avoid duplication with Text.js */
+  font-size: 3.125rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -1.8px;
+
+  ${props => props.theme.query.md} {
+    font-size: 4.375rem;
+  }
+
+  ${props => props.theme.query.lg} {
+    font-size: 8.125rem;
+  }
+`;
+
+const Layout = ({
+  hero,
+  video,
+  navBackground,
+  navStickyBackground,
+  theme,
+  children,
+}) => {
   const headerEl = useRef(null);
+
+  const stickyOnScroll = !!(hero && (hero.image || hero.video));
 
   const [showDrawer, setShowDrawer] = useState(false);
   const [stickyOffset, setStickyOffset] = useState();
-  const [isSticky, setIsSticky] = useState(false);
+  const [isSticky, setIsSticky] = useState(!stickyOnScroll);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const player = new Plyr(document.getElementById('plyr'), {
-    // title: 'Todo',
-    controls: false,
-    autoplay: true,
-    clickToPlay: false,
-    loop: {
-      active: true,
-    },
-    fullscreen: {
-      enabled: false,
-      fallback: false,
-    },
-  });
+  if (hero && hero.video) {
+    new Plyr(document.getElementById('plyr'), {
+      // title: 'Todo',
+      controls: false,
+      autoplay: true,
+      clickToPlay: false,
+      loop: {
+        active: true,
+      },
+      fullscreen: {
+        enabled: false,
+        fallback: false,
+      },
+    });
+  }
 
   useLayoutEffect(() => {
-    setStickyOffset(headerEl.current.offsetHeight);
+    if (stickyOnScroll) {
+      setStickyOffset(headerEl.current.offsetHeight);
+    }
   });
 
   useEffect(() => {
@@ -293,6 +370,15 @@ const Layout = ({ hero, video, theme, children }) => {
     }, SLIDE_IN_DURATION);
   }, [isSticky]);
 
+  let logo = logoDark;
+
+  if (
+    (!isSticky && [NAV_DARK, NAV_TRANSPARENT].includes(navBackground)) ||
+    (isSticky && navStickyBackground === NAV_DARK)
+  ) {
+    logo = logoLight;
+  }
+
   return (
     <React.Fragment>
       {/* <Header siteTitle={data.site.siteMetadata.title} /> */}
@@ -304,10 +390,14 @@ const Layout = ({ hero, video, theme, children }) => {
               stickyOffset={stickyOffset}
               onSetIsSticky={setIsSticky}
               isDrawerOpen={showDrawer}
+              stickyOnScroll={stickyOnScroll}
+              background={navBackground}
+              stickyBackground={navStickyBackground}
             >
               <NavContent>
                 <a href="/">
-                  <Logo src={((!isSticky && isAnimating) || isSticky) ? logoDark : logoLight} />
+                  {/* <Logo src={((!isSticky && isAnimating) || isSticky) ? logoDark : logoLight} /> */}
+                  <Logo src={logo} />
                 </a>
 
                 {mq.lte('md') ? (
@@ -333,7 +423,7 @@ const Layout = ({ hero, video, theme, children }) => {
                   </React.Fragment>
                 ) : (
                   <LargeNavLinks
-                    isSticky={isSticky}
+                    background={(!isSticky && navBackground === NAV_LIGHT) || (isSticky && navStickyBackground === NAV_LIGHT) ? NAV_LIGHT : NAV_DARK}
                   />
                 )}
               </NavContent>
@@ -341,9 +431,9 @@ const Layout = ({ hero, video, theme, children }) => {
           )}
         </Media>
 
-        {hero && (
+        {hero && hero.image && (
           <Image
-            fluid={hero}
+            fluid={hero.image}
             objectFit="cover"
             objectPosition="top center"
             style={{
@@ -353,11 +443,19 @@ const Layout = ({ hero, video, theme, children }) => {
           />
         )}
 
-        {!hero && video && video.mp4 && (
+        {hero && !hero.image && hero.video && hero.video.mp4 && (
           <Video
-            src={video.mp4}
+            src={hero.video.mp4}
             id="plyr"
           />
+        )}
+
+        {hero && (hero.image || hero.video) && hero.text && (
+          <Constrain>
+            <HeroText>
+              {hero.text}
+            </HeroText>
+          </Constrain>
         )}
       </Header>
 
@@ -368,18 +466,30 @@ const Layout = ({ hero, video, theme, children }) => {
           {children}
         </Constrain>
       </main>
+
+      <Footer />
     </React.Fragment>
   );
 }
 
 Layout.propTypes = {
-  hero: PropTypes.object,
-  video: PropTypes.shape({
-    mp4: PropTypes.string,
-    webm: PropTypes.string,
+  hero: PropTypes.shape({
+    text: PropTypes.string,
+    image: PropTypes.object,
+    video: PropTypes.shape({
+      mp4: PropTypes.string,
+      webm: PropTypes.string,
+    }),
   }),
+  navBackground: PropTypes.oneOf(navTypes),
+  navStickyBackground: PropTypes.oneOf(navTypes),
   theme: PropTypes.object.isRequired,
   children: PropTypes.node.isRequired,
+};
+
+Layout.defaultProps = {
+  navBackground: NAV_TRANSPARENT,
+  navStickyBackground: NAV_TRANSPARENT,
 };
 
 export default withTheme(Layout);

@@ -3,23 +3,21 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { Row, Col } from '../Grid';
-import Heading from '../Heading';
+import Text from '../Text';
 import VerticalSpacing from '../VerticalSpacing';
 
 const Intro = styled(props => (
   <div className={props.className}>
     <Row gutter={20}>
       <Col xs={24} lg={6}>
-        <Heading
-          headingLevel={2}
-          type="caption"
-        >{props.caption}</Heading>
+        <h2>
+          <Text type="caption">{props.caption}</Text>
+        </h2>
       </Col>
       <Col xs={24} lg={18}>
-        <Heading
-          headingLevel={1}
-          type="secondary"
-        >{props.title}</Heading>
+        <h1>
+          <Text type="secondary">{props.title}</Text>
+        </h1>
 
         <VerticalSpacing size={3} />
 
