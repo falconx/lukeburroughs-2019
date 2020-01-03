@@ -20,14 +20,16 @@ import logoDark from '../../images/logo-dark.png';
 const SLIDE_IN_DURATION = 1000; // ms
 const FADE_IN_DURATION = 500; // ms
 
-const NAV_TRANSPARENT = 'transparent';
-const NAV_LIGHT = 'light';
-const NAV_DARK = 'dark';
+const NAV_LIGHT = 'Light';
+const NAV_DARK = 'Dark';
+const NAV_TRANSPARENT_LIGHT_TEXT = 'Transparent w/Light Text';
+const NAV_TRANSPARENT_DARK_TEXT = 'Transparent w/Dark Text';
 
-const navTypes = [
-  NAV_TRANSPARENT,
+const navAppearanceTypes = [
   NAV_LIGHT,
   NAV_DARK,
+  NAV_TRANSPARENT_LIGHT_TEXT,
+  NAV_TRANSPARENT_DARK_TEXT,
 ];
 
 const slideIn = color => keyframes`
@@ -65,20 +67,6 @@ const StyledNav = styled.nav`
   width: 100%;
   z-index: 1;
 
-  background-color: ${props => {
-    switch (props.background) {
-      case NAV_LIGHT:
-        return '#fff';
-
-      case NAV_DARK:
-        return props.theme.colors.black;
-
-      default:
-      case NAV_TRANSPARENT:
-        return 'transparent';
-    }
-  }};
-
   ${props => props.isDrawerOpen && `
     color: #fff;
   `}
@@ -89,8 +77,68 @@ const StyledNav = styled.nav`
     left: 0;
   `}
 
+  ${props => {
+    switch (props.navAppearance.initial) {
+      case NAV_LIGHT:
+        return `
+          color: ${props.theme.colors.black};
+          background-color: #fff
+        `;
+
+      case NAV_DARK:
+        return `
+          color: #fff;
+          background-color: ${props.theme.colors.black}
+        `;
+
+      case NAV_TRANSPARENT_LIGHT_TEXT:
+        return `
+          color: #fff;
+          background-color: transparent;
+        `;
+
+      default:
+      case NAV_TRANSPARENT_DARK_TEXT:
+        return `
+          color: ${props.theme.colors.black};
+          background-color: transparent;
+        `;
+    }
+  }};
+
+  ${props => {
+    if (props.isSticky) {
+      return `color: ${(() => {
+        switch (props.navAppearance.onScroll) {
+          case NAV_DARK:
+          case NAV_TRANSPARENT_LIGHT_TEXT:
+            return '#fff';
+
+          default:
+          case NAV_LIGHT:
+          case NAV_TRANSPARENT_DARK_TEXT:
+            return props.theme.colors.black;
+        }
+      })()};`;
+    }
+  }};
+
   ${props => props.stickyOnScroll && css`
-    animation: ${slideIn(props.stickyBackground === NAV_DARK ? props.theme.colors.black : '#fff')} ${SLIDE_IN_DURATION / 1000}s;
+    animation: ${slideIn((() => {
+      switch (props.navAppearance.onScroll) {
+        case NAV_LIGHT:
+          return '#fff';
+
+        case NAV_DARK:
+          return props.theme.colors.black;
+
+        default:
+        case NAV_TRANSPARENT_LIGHT_TEXT:
+        case NAV_TRANSPARENT_DARK_TEXT:
+          return 'transparent';
+      }
+    })())} ${SLIDE_IN_DURATION / 1000}s;
+
     animation-iteration-count: 1;
     animation-fill-mode: backwards;
     animation-direction: reverse;
@@ -109,8 +157,10 @@ const StyledNav = styled.nav`
 StyledNav.propTypes = {
   isInitialRender: PropTypes.bool,
   isSticky: PropTypes.bool,
-  background: PropTypes.oneOf(navTypes),
-  stickyBackground: PropTypes.oneOf(navTypes),
+  navAppearance: PropTypes.shape({
+    initial: PropTypes.oneOf(navAppearanceTypes).isRequired,
+    onScroll: PropTypes.oneOf(navAppearanceTypes),
+  }).isRequired,
   stickyOnScroll: PropTypes.bool,
 };
 
@@ -134,9 +184,8 @@ const NavContent = styled.div`
 
 const Nav = ({
   stickyOffset,
-  onSetIsSticky,
-  isDrawerOpen,
   stickyOnScroll,
+  onSetIsSticky,
   ...props,
 }) => {
   const [isSticky, setIsSticky] = useState(false);
@@ -170,8 +219,9 @@ const Nav = ({
       {...props}
       isInitialRender={isInitialRender}
       isSticky={isSticky}
-      isDrawerOpen={isDrawerOpen}
+      isDrawerOpen={props.isDrawerOpen}
       stickyOnScroll={stickyOnScroll}
+      navAppearance={props.navAppearance}
       // force re-render to initiate CSS animation
       key={isSticky}
     />
@@ -181,16 +231,16 @@ const Nav = ({
 Nav.propTypes = {
   stickyOffset: PropTypes.number,
   onSetIsSticky: PropTypes.func,
-  background: PropTypes.oneOf(navTypes),
-  stickyBackground: PropTypes.oneOf(navTypes),
+  navAppearance: PropTypes.shape({
+    initial: PropTypes.oneOf(navAppearanceTypes).isRequired,
+    onScroll: PropTypes.oneOf(navAppearanceTypes),
+  }).isRequired,
   stickyOnScroll: PropTypes.bool,
 };
 
 Nav.defaultProps = {
   stickyOffset: 0,
   onSetIsSticky: Function.prototype,
-  background: NAV_TRANSPARENT,
-  stickyBackground: NAV_TRANSPARENT,
 };
 
 const Logo = styled.img.attrs({
@@ -235,6 +285,8 @@ const NavToggle = styled.button.attrs({
   }
 
   ${props => props.isOpen && `
+    color: #fff;
+
     &:before,
     &:before,
     &:after,
@@ -322,8 +374,7 @@ const HeroText = styled.div`
 const Layout = ({
   hero,
   video,
-  navBackground,
-  navStickyBackground,
+  navAppearance,
   theme,
   children,
 }) => {
@@ -333,8 +384,7 @@ const Layout = ({
 
   const [showDrawer, setShowDrawer] = useState(false);
   const [stickyOffset, setStickyOffset] = useState();
-  const [isSticky, setIsSticky] = useState(!stickyOnScroll);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [isSticky, setIsSticky] = useState(false);
 
   if (hero && hero.video) {
     new Plyr(document.getElementById('plyr'), {
@@ -362,19 +412,11 @@ const Layout = ({
     document.body.classList[showDrawer ? 'add' : 'remove']('noscroll');
   }, [showDrawer]);
 
-  useEffect(() => {
-    setIsAnimating(true);
-
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, SLIDE_IN_DURATION);
-  }, [isSticky]);
-
   let logo = logoDark;
 
   if (
-    (!isSticky && [NAV_DARK, NAV_TRANSPARENT].includes(navBackground)) ||
-    (isSticky && navStickyBackground === NAV_DARK)
+    (!isSticky && [NAV_DARK, NAV_TRANSPARENT_LIGHT_TEXT].includes(navAppearance.initial)) ||
+    (isSticky && [NAV_DARK, NAV_TRANSPARENT_LIGHT_TEXT].includes(navAppearance.onScroll))
   ) {
     logo = logoLight;
   }
@@ -391,12 +433,10 @@ const Layout = ({
               onSetIsSticky={setIsSticky}
               isDrawerOpen={showDrawer}
               stickyOnScroll={stickyOnScroll}
-              background={navBackground}
-              stickyBackground={navStickyBackground}
+              navAppearance={navAppearance}
             >
               <NavContent>
                 <a href="/">
-                  {/* <Logo src={((!isSticky && isAnimating) || isSticky) ? logoDark : logoLight} /> */}
                   <Logo src={logo} />
                 </a>
 
@@ -423,7 +463,12 @@ const Layout = ({
                   </React.Fragment>
                 ) : (
                   <LargeNavLinks
-                    background={(!isSticky && navBackground === NAV_LIGHT) || (isSticky && navStickyBackground === NAV_LIGHT) ? NAV_LIGHT : NAV_DARK}
+                    text={
+                      (!isSticky && [NAV_DARK, NAV_TRANSPARENT_LIGHT_TEXT].includes(navAppearance.initial)) ||
+                      (isSticky && [NAV_DARK, NAV_TRANSPARENT_LIGHT_TEXT].includes(navAppearance.onScroll))
+                        ? 'light'
+                        : 'dark'
+                    }
                   />
                 )}
               </NavContent>
@@ -481,15 +526,12 @@ Layout.propTypes = {
       webm: PropTypes.string,
     }),
   }),
-  navBackground: PropTypes.oneOf(navTypes),
-  navStickyBackground: PropTypes.oneOf(navTypes),
+  navAppearance: PropTypes.shape({
+    initial: PropTypes.oneOf(navAppearanceTypes).isRequired,
+    onScroll: PropTypes.oneOf(navAppearanceTypes),
+  }).isRequired,
   theme: PropTypes.object.isRequired,
   children: PropTypes.node.isRequired,
-};
-
-Layout.defaultProps = {
-  navBackground: NAV_TRANSPARENT,
-  navStickyBackground: NAV_TRANSPARENT,
 };
 
 export default withTheme(Layout);

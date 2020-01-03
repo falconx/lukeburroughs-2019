@@ -42,6 +42,8 @@ export const query = graphql`
       title
       acf {
         page_type
+        nav_appearance
+        nav_appearance_on_scroll
         text
         title
         image {
@@ -329,6 +331,10 @@ const Page = props => {
   return (
     <IndexPage
       pageType={page.acf.page_type}
+      navAppearance={{
+        initial: page.acf.nav_appearance,
+        onScroll: page.acf.nav_appearance_on_scroll,
+      }}
       hero={{
         image: heroImage,
         // video: heroVideo,

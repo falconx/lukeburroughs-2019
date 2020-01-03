@@ -29,9 +29,17 @@ const TYPE_HOME = 'Home';
 const TYPE_ABOUT = 'About';
 const TYPE_CASE_STUDY = 'Case Study';
 
-const NAV_TRANSPARENT = 'transparent';
-const NAV_LIGHT = 'light';
-const NAV_DARK = 'dark';
+const NAV_LIGHT = 'Light';
+const NAV_DARK = 'Dark';
+const NAV_TRANSPARENT_LIGHT_TEXT = 'Transparent w/Light Text';
+const NAV_TRANSPARENT_DARK_TEXT = 'Transparent w/Dark Text';
+
+const navAppearanceTypes = [
+  NAV_LIGHT,
+  NAV_DARK,
+  NAV_TRANSPARENT_LIGHT_TEXT,
+  NAV_TRANSPARENT_DARK_TEXT,
+];
 
 const GlobalStyles = createGlobalStyle`
   @font-face {
@@ -204,120 +212,91 @@ const HomeIntro = () => (
   </React.Fragment>
 );
 
-const IndexPage = props => {
-  const navBackground = (() => {
-    switch (props.pageType) {
-      case TYPE_ABOUT:
-        return NAV_LIGHT;
+const IndexPage = props => (
+  <ThemeProvider theme={theme}>
+    <BreakpointProvider>
+      <Layout
+        hero={props.hero}
+        navAppearance={props.navAppearance}
+      >
+        <SEO title="Home" />
 
-      default:
-        return;
-    }
-  })();
+        <GlobalStyles />
+        <GridStyles />
 
-  const navStickyBackground = (() => {
-    switch (props.pageType) {
-      case TYPE_ABOUT:
-        return NAV_LIGHT;
+        {props.pageType === TYPE_HOME && (
+          <HomeIntro />
+        )}
 
-      case TYPE_HOME:
-        return NAV_DARK;
+        {props.children}
 
-      case TYPE_CASE_STUDY:
-        return NAV_LIGHT;
+        {props.pageType === TYPE_CASE_STUDY && (
+          <WhereTo>
+            <img src={placeholder} alt="" />
+            <img src={placeholder} alt="" />
+            <img src={placeholder} alt="" />
+          </WhereTo>
+        )}
 
-      default:
-        return;
-    }
-  })();
+        {props.pageType === TYPE_ABOUT && props.imageList.length ? (
+          <React.Fragment>
+            {props.title && (
+              <React.Fragment>
+                <h2>
+                  <Text type="secondary">
+                    <span dangerouslySetInnerHTML={{
+                      __html: props.title,
+                    }} />
+                  </Text>
+                </h2>
+                <VerticalSpacing size={3} />
+              </React.Fragment>
+            )}
 
-  return (
-    <ThemeProvider theme={theme}>
-      <BreakpointProvider>
-        <Layout
-          hero={props.hero}
-          navBackground={navBackground}
-          navStickyBackground={navStickyBackground}
-        >
-          <SEO title="Home" />
-
-          <GlobalStyles />
-          <GridStyles />
-
-          {props.pageType === TYPE_HOME && (
-            <HomeIntro />
-          )}
-
-          {props.children}
-
-          {props.pageType === TYPE_CASE_STUDY && (
-            <WhereTo>
-              <img src={placeholder} alt="" />
-              <img src={placeholder} alt="" />
-              <img src={placeholder} alt="" />
-            </WhereTo>
-          )}
-
-          {props.pageType === TYPE_ABOUT && props.imageList.length ? (
-            <React.Fragment>
-              {props.title && (
+            <Media>
+              {mq => (
                 <React.Fragment>
-                  <h2>
-                    <Text type="secondary">
-                      <span dangerouslySetInnerHTML={{
-                        __html: props.title,
-                      }} />
-                    </Text>
-                  </h2>
-                  <VerticalSpacing size={3} />
+                  {chunk(props.imageList, mq.lte('sm') ? 2 : 4).map((list, index) => (
+                    <Row key={index} gutter={20} type="flex" justify="center">
+                      {list.map((image, index) => (
+                        <Col key={index} xs={12} md={6}>
+                          <Logo>
+                            <Image
+                              fluid={image}
+                              style={{
+                                width: mq.lte('sm') ? '90px' : '135px',
+                              }}
+                            />
+                          </Logo>
+                        </Col>
+                      ))}
+                    </Row>
+                  ))}
                 </React.Fragment>
               )}
+            </Media>
+          </React.Fragment>
+        ) : null}
 
-              <Media>
-                {mq => (
-                  <React.Fragment>
-                    {chunk(props.imageList, mq.lte('sm') ? 2 : 4).map((list, index) => (
-                      <Row key={index} gutter={20} type="flex" justify="center">
-                        {list.map((image, index) => (
-                          <Col key={index} xs={12} md={6}>
-                            <Logo>
-                              <Image
-                                fluid={image}
-                                style={{
-                                  width: mq.lte('sm') ? '90px' : '135px',
-                                }}
-                              />
-                            </Logo>
-                          </Col>
-                        ))}
-                      </Row>
-                    ))}
-                  </React.Fragment>
-                )}
-              </Media>
-            </React.Fragment>
-          ) : null}
+        {[TYPE_DEFAULT, TYPE_CASE_STUDY, TYPE_ABOUT].includes(props.pageType) && (
+          <div>
+            <Spacer />
 
-          {[TYPE_DEFAULT, TYPE_CASE_STUDY, TYPE_ABOUT].includes(props.pageType) && (
-            <div>
-              <Spacer />
+            <h2>
+              <Text type="secondary">Project in mind?</Text>
+            </h2>
 
-              <h2>
-                <Text type="secondary">Project in mind?</Text>
-              </h2>
+            <a href="mailto:hi@unheard.design">
+              <Text type="secondary">hi@unheard.design</Text>
+            </a>
 
-              <a href="mailto:hi@unheard.design">
-                <Text type="secondary">hi@unheard.design</Text>
-              </a>
-
-              <Spacer />
-            </div>
-          )}
-        </Layout>
-      </BreakpointProvider>
-    </ThemeProvider>
-  );
-};
+            <Spacer />
+          </div>
+        )}
+      </Layout>
+    </BreakpointProvider>
+  </ThemeProvider>
+);
 
 IndexPage.propTypes = {
   pageType: PropTypes.oneOf([
@@ -326,6 +305,10 @@ IndexPage.propTypes = {
     TYPE_ABOUT,
     TYPE_CASE_STUDY,
   ]),
+  navAppearance: PropTypes.shape({
+    initial: PropTypes.oneOf(navAppearanceTypes).isRequired,
+    onScroll: PropTypes.oneOf(navAppearanceTypes),
+  }).isRequired,
   hero: PropTypes.shape({
     text: PropTypes.string,
     image: PropTypes.object,
