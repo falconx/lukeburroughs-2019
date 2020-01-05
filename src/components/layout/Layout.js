@@ -348,6 +348,7 @@ const Copyright = styled.small`
 const Video = styled.video`
   object-fit: cover;
   height: 100vh !important;
+  margin-bottom: 30px;
 `;
 
 const HeroText = styled.div`
@@ -484,6 +485,7 @@ const Layout = ({
             style={{
               height: '100vh',
               width: '100%',
+              marginBottom: '30px',
             }}
           />
         )}
@@ -503,8 +505,6 @@ const Layout = ({
           </Constrain>
         )}
       </Header>
-
-      <VerticalSpacing size={3} />
 
       <main role="main">
         <Constrain>
