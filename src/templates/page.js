@@ -2,7 +2,7 @@ import React from 'react';
 import { graphql } from 'gatsby';
 import get from 'lodash/get';
 
-import IndexPage from '../pages/index';
+import DefaultPage from '../pages/default';
 
 import { Row, Col } from '../components/Grid';
 
@@ -37,7 +37,7 @@ const MODE_DARK = 'Dark';
 
 const WORDPRESS_URL = 'http://localhost/unheard-www';
 
-const transformLink = link => link.replace(WORDPRESS_URL, '');
+const transformLink = link => link && link.replace(WORDPRESS_URL, '');
 
 // "Ignore" hack added as a workaround to https://github.com/gatsbyjs/gatsby/issues/15707
 export const query = graphql`
@@ -374,7 +374,7 @@ const Page = props => {
   const imageList = (get(page, 'acf.image_list') || []).map(item => item.images.localFile.childImageSharp.fluid);
 
   return (
-    <IndexPage
+    <DefaultPage
       pageType={page.acf.page_type}
       pageBackground={page.acf.page_background}
       showProjectInMindBlock={page.acf.show_project_in_mind_block}
@@ -402,7 +402,7 @@ const Page = props => {
 
         return renderLayout(type, layout, index);
       })}
-    </IndexPage>
+    </DefaultPage>
   );
 };
 

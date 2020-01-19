@@ -34,44 +34,40 @@ const Content = styled.div`
   padding-top: 80px;
 `;
 
-const BlogEntry = styled(props => {
-  console.log(props);
+const BlogEntry = styled(props => (
+  <article className={props.className}>
+    <Image
+      fluid={props.image}
+      objectFit="cover"
+      objectPosition="top center"
+      style={{
+        height: '100vh',
+        width: '100%',
+      }}
+    />
 
-  return (
-    <article className={props.className}>
-      <Image
-        fluid={props.image}
-        objectFit="cover"
-        objectPosition="top center"
-        style={{
-          height: '100vh',
-          width: '100%',
-        }}
-      />
+    <Content>
+      <Constrain>
+        <TextSquare>{props.date}</TextSquare>
 
-      <Content>
-        <Constrain>
-          <TextSquare>{props.date}</TextSquare>
+        <h2>
+          <Text type="main">
+            <span dangerouslySetInnerHTML={{
+              __html: props.children
+            }} />
+          </Text>
+        </h2>
 
-          <h2>
-            <Text type="main">
-              <span dangerouslySetInnerHTML={{
-                __html: props.children
-              }} />
-            </Text>
-          </h2>
+        <VerticalSpacing size={3} />
 
-          <VerticalSpacing size={3} />
-
-          <Link
-            href={props.destination}
-            light={props.light}
-          >Read more</Link>
-        </Constrain>
-      </Content>
-    </article>
-  );
-})`
+        <Link
+          href={props.destination}
+          light={props.light}
+        >Read more</Link>
+      </Constrain>
+    </Content>
+  </article>
+))`
   position: relative;
   color: ${props => props.light ? '#fff' : '#2b2b2b'};
 `;

@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
-import styled, { css, withTheme, keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import Image from 'gatsby-image/withIEPolyfill';
 
-import Plyr from 'plyr';
 import 'plyr/dist/plyr.css';
 
 import { Media } from '../Media';
@@ -16,6 +15,10 @@ import CompactNavLinks from './nav/CompactNavLinks';
 
 import logoLight from '../../images/logo-light.png';
 import logoDark from '../../images/logo-dark.png';
+
+if (typeof document !== 'undefined') {
+  var Plyr = require('plyr');
+}
 
 const SLIDE_IN_DURATION = 1000; // ms
 const FADE_IN_DURATION = 500; // ms
@@ -375,7 +378,6 @@ const Layout = styled(({
   hero,
   video,
   navAppearance,
-  theme,
   children,
   className,
 }) => {
@@ -387,7 +389,7 @@ const Layout = styled(({
   const [stickyOffset, setStickyOffset] = useState();
   const [isSticky, setIsSticky] = useState(false);
 
-  if (hero && hero.video) {
+  if (typeof document !== 'undefined' && hero && hero.video) {
     new Plyr(document.getElementById('plyr'), {
       // title: 'Todo',
       controls: false,
@@ -531,9 +533,15 @@ Layout.propTypes = {
   navAppearance: PropTypes.shape({
     initial: PropTypes.oneOf(navAppearanceTypes).isRequired,
     onScroll: PropTypes.oneOf(navAppearanceTypes),
-  }).isRequired,
-  theme: PropTypes.object.isRequired,
+  }),
   children: PropTypes.node.isRequired,
 };
 
-export default withTheme(Layout);
+Layout.defaultProps = {
+  navAppearance: {
+    initial: NAV_LIGHT,
+    onScroll: NAV_LIGHT,
+  },
+};
+
+export default Layout;
