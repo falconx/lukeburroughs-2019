@@ -21,8 +21,8 @@ import MultiColumnText from '../components/layout/MultiColumnText';
 const LAYOUT_FULL_WIDTH = 'WordPressAcf_full_width';
 const LAYOUT_MULTI_COLUMN_TEXT = 'WordPressAcf_multi_column_text';
 const LAYOUT_THUMBNAILS = 'WordPressAcf_thumbnails';
+const LAYOUT_SPACER = 'WordPressAcf_spacer';
 
-const COMPONENT_SPACER = 'spacer';
 const COMPONENT_INTRO = 'intro';
 const COMPONENT_FULL_IMG = 'full_img';
 const COMPONENT_MID_IMAGE_LEFT = 'mid_image_left';
@@ -35,6 +35,10 @@ const COMPONENT_SUB_TITLE = 'sub_title';
 
 const MODE_DARK = 'Dark';
 
+const WORDPRESS_URL = 'http://localhost/unheard-www';
+
+const transformLink = link => link.replace(WORDPRESS_URL, '');
+
 // "Ignore" hack added as a workaround to https://github.com/gatsbyjs/gatsby/issues/15707
 export const query = graphql`
   query($id: String!) {
@@ -42,11 +46,13 @@ export const query = graphql`
       title
       acf {
         page_type
-        nav_appearance
-        nav_appearance_on_scroll
-        text
-        title
-        image {
+        page_background
+        show_project_in_mind_block
+        nav_appearance {
+          nav_appearance
+          nav_appearance_on_scroll
+        }
+        hero_image {
           localFile {
             childImageSharp {
               fluid {
@@ -55,11 +61,33 @@ export const query = graphql`
             }
           }
         }
+        hero_video {
+          localFile {
+            publicURL
+          }
+        }
+        hero_text
+        title
         image_list {
           images {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 135) {
+                fluid {
+                  ...GatsbyImageSharpFluid
+                }
+              }
+            }
+          }
+        }
+        entries {
+          date
+          destination
+          light
+          title
+          image {
+            localFile {
+              childImageSharp {
+                fluid {
                   ...GatsbyImageSharpFluid
                 }
               }
@@ -71,13 +99,23 @@ export const query = graphql`
             internal {
               type
             }
-            components {
+            component {
               acf_fc_layout
               caption
-              title
               text
-              mode
+              title
+              content_title
+              content_destination
               image {
+                localFile {
+                  childImageSharp {
+                    fluid {
+                      ...GatsbyImageSharpFluid
+                    }
+                  }
+                }
+              }
+              content_thumbnail {
                 localFile {
                   childImageSharp {
                     fluid {
@@ -106,30 +144,37 @@ export const query = graphql`
               }
             }
           }
+          ... on WordPressAcf_spacer {
+            internal {
+              type
+            }
+          }
           ... on WordPressAcf_thumbnails {
             internal {
               type
             }
-            left_image {
-              localFile {
-                childImageSharp {
-                  fluid {
-                    ...GatsbyImageSharpFluid
-                  }
-                }
-              }
-            }
-            right_image {
-              localFile {
-                childImageSharp {
-                  fluid {
-                    ...GatsbyImageSharpFluid
-                  }
-                }
-              }
-            }
             left_title
+            left_destination
+            left_thumbnail {
+              localFile {
+                childImageSharp {
+                  fluid {
+                    ...GatsbyImageSharpFluid
+                  }
+                }
+              }
+            }
             right_title
+            right_destination
+            right_thumbnail {
+              localFile {
+                childImageSharp {
+                  fluid {
+                    ...GatsbyImageSharpFluid
+                  }
+                }
+              }
+            }
           }
           ... on WordPressAcf_multi_column_text {
             internal {
@@ -154,20 +199,12 @@ const Page = props => {
   const page = props.data.wordpressPage;
   const layouts = page.acf.layout_page || [];
 
-  const heroImage = get(page, 'acf.image.localFile.childImageSharp.fluid');
-  // const heroVideo = page.acf.video && {
-  //   mp4: get(page, 'acf.video.mp4_video.localFile.publicURL'),
-  //   webm: get(page, 'acf.video.webm_video.localFile.publicURL'),
-  // };
+  const heroImage = get(page, 'acf.hero_image.localFile.childImageSharp.fluid');
+  const heroVideo = get(page, 'acf.hero_video.localFile.publicURL');
 
   const renderComponents = components => {
     return components.map((component, index) => {
       switch (component.acf_fc_layout) {
-        case COMPONENT_SPACER:
-          return (
-            <Spacer key={index} />
-          );
-
         case COMPONENT_INTRO:
           return (
             <Intro
@@ -241,9 +278,10 @@ const Page = props => {
           return (
             <Thumbnail
               key={index}
-              image={component.image.localFile.childImageSharp.fluid}
+              image={component.content_thumbnail.localFile.childImageSharp.fluid}
+              link={transformLink(component.content_destination)}
             >
-              {component.title}
+              {component.content_title}
             </Thumbnail>
           );
 
@@ -273,7 +311,7 @@ const Page = props => {
   const renderLayout = (type, data, key) => {
     switch (type) {
       case LAYOUT_FULL_WIDTH:
-        return renderComponents(data.components || []);
+        return renderComponents(data.component || []);
 
       case LAYOUT_MULTI_COLUMN_TEXT:
         return (
@@ -307,42 +345,53 @@ const Page = props => {
             gutter={20}
           >
             <Col xs={24} md={12}>
-              <Thumbnail image={data.left_image.localFile.childImageSharp.fluid}>
+              <Thumbnail
+                image={data.left_thumbnail.localFile.childImageSharp.fluid}
+                link={transformLink(data.left_destination)}
+              >
                 {data.left_title}
               </Thumbnail>
             </Col>
             <Col xs={24} md={12}>
-              <Thumbnail image={data.right_image.localFile.childImageSharp.fluid}>
+              <Thumbnail
+                image={data.right_thumbnail.localFile.childImageSharp.fluid}
+                link={transformLink(data.right_destination)}
+              >
                 {data.right_title}
               </Thumbnail>
             </Col>
           </Row>
         );
 
+      case LAYOUT_SPACER:
+        return <Spacer key={key} />;
+
       default:
         return null;
     }
   };
 
-  const imageList =
-    page.acf.image_list &&
-    page.acf.image_list.map(item => item.images.localFile.childImageSharp.fluid);
+  const imageList = (get(page, 'acf.image_list') || []).map(item => item.images.localFile.childImageSharp.fluid);
 
   return (
     <IndexPage
       pageType={page.acf.page_type}
+      pageBackground={page.acf.page_background}
+      showProjectInMindBlock={page.acf.show_project_in_mind_block}
       navAppearance={{
-        initial: page.acf.nav_appearance,
-        onScroll: page.acf.nav_appearance_on_scroll,
+        initial: page.acf.nav_appearance.nav_appearance,
+        onScroll: page.acf.nav_appearance.nav_appearance_on_scroll,
       }}
       hero={{
         image: heroImage,
-        // video: heroVideo,
-        text: page.acf.text,
+        video: heroVideo,
+        text: page.acf.hero_text,
       }}
       // About page props
       imageList={imageList}
       title={page.acf.title}
+      // Process page props
+      blogEntries={page.acf.entries || []}
     >
       {layouts.map((layout, index) => {
         const type = layout.internal && layout.internal.type;

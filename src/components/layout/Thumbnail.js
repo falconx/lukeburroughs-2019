@@ -7,22 +7,29 @@ import Text from '../Text';
 import VerticalSpacing from '../VerticalSpacing';
 
 const Thumbnail = styled(props => (
-  <div className={props.className}>
+  <a
+    className={props.className}
+    href={props.link}
+  >
     <Image fluid={props.image} />
 
     <VerticalSpacing size={1} />
 
     <h2>
       <Text type="secondary">
-        {props.children}
+        <span dangerouslySetInnerHTML={{
+          __html: props.children
+        }} />
       </Text>
     </h2>
-  </div>
+  </a>
 ))`
+  display: block;
   margin: 30px 0;
 `;
 
 Thumbnail.propTypes = {
+  link: PropTypes.string.isRequired,
   image: PropTypes.object.isRequired,
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired
 }

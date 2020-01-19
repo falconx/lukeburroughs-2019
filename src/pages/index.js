@@ -13,6 +13,7 @@ import Text from '../components/Text';
 import Layout from '../components/layout/Layout';
 import WhereTo from '../components/layout/WhereTo';
 import Spacer from '../components/layout/Spacer';
+import BlogEntry from '../components/layout/BlogEntry';
 import SEO from '../components/Seo';
 import { Media, BreakpointProvider } from '../components/Media';
 import VerticalSpacing from '../components/VerticalSpacing';
@@ -28,6 +29,9 @@ const TYPE_DEFAULT = 'Default';
 const TYPE_HOME = 'Home';
 const TYPE_ABOUT = 'About';
 const TYPE_CASE_STUDY = 'Case Study';
+
+const BACKGROUND_LIGHT = 'Light';
+const BACKGROUND_DARK = 'Dark';
 
 const NAV_LIGHT = 'Light';
 const NAV_DARK = 'Dark';
@@ -99,6 +103,11 @@ const GlobalStyles = createGlobalStyle`
     font-family: MatterTrial;
     font-size: 1.125rem;
     color: ${props => props.theme.colors.black};
+
+    ${props => props.pageBackground === BACKGROUND_DARK && `
+      color: #fff;
+      background-color: ${props.theme.colors.darkGrey};
+    `}
   }
 
   /* Remove list styles on ul, ol elements with a class attribute */
@@ -209,94 +218,134 @@ const HomeIntro = () => (
         </h2>
       </Col>
     </Row>
+
+    <Spacer />
   </React.Fragment>
 );
 
-const IndexPage = props => (
-  <ThemeProvider theme={theme}>
-    <BreakpointProvider>
-      <Layout
-        hero={props.hero}
-        navAppearance={props.navAppearance}
-      >
-        <SEO title="Home" />
+const FullWidth = styled.div`
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+`;
 
-        <GlobalStyles />
-        <GridStyles />
+const BlogEnties = styled.div`
+  /* nav height */
+  margin-top: -80px;
+`;
 
-        {props.pageType === TYPE_HOME && (
-          <HomeIntro />
-        )}
+const IndexPage = props => {
+  return (
+    <ThemeProvider theme={theme}>
+      <BreakpointProvider>
+        <Layout
+          hero={props.hero}
+          navAppearance={props.navAppearance}
+        >
+          {props.title && (
+            <SEO title={props.title} />
+          )}
 
-        {props.children}
+          <GlobalStyles
+            pageBackground={props.pageBackground}
+          />
+          <GridStyles />
 
-        {props.pageType === TYPE_CASE_STUDY && (
-          <WhereTo>
-            <img src={placeholder} alt="" />
-            <img src={placeholder} alt="" />
-            <img src={placeholder} alt="" />
-          </WhereTo>
-        )}
+          {props.blogEntries.length ? (
+            <BlogEnties>
+              <FullWidth>
+                {props.blogEntries.map((entry, index) => (
+                  <BlogEntry
+                    key={index}
+                    date={entry.date}
+                    destination={entry.destination}
+                    image={entry.image.localFile.childImageSharp.fluid}
+                    light={entry.light}
+                  >
+                    {entry.title}
+                  </BlogEntry>
+                ))}
+              </FullWidth>
+            </BlogEnties>
+          ) : null}
 
-        {props.pageType === TYPE_ABOUT && props.imageList.length ? (
-          <React.Fragment>
-            {props.title && (
-              <React.Fragment>
-                <h2>
-                  <Text type="secondary">
-                    <span dangerouslySetInnerHTML={{
-                      __html: props.title,
-                    }} />
-                  </Text>
-                </h2>
-                <VerticalSpacing size={3} />
-              </React.Fragment>
-            )}
+          {props.pageType === TYPE_HOME && (
+            <HomeIntro />
+          )}
 
-            <Media>
-              {mq => (
+          {props.children}
+
+          {props.pageType === TYPE_CASE_STUDY && (
+            <WhereTo>
+              <img src={placeholder} alt="" />
+              <img src={placeholder} alt="" />
+              <img src={placeholder} alt="" />
+            </WhereTo>
+          )}
+
+          {props.pageType === TYPE_ABOUT && props.imageList.length ? (
+            <React.Fragment>
+              {props.title && (
                 <React.Fragment>
-                  {chunk(props.imageList, mq.lte('sm') ? 2 : 4).map((list, index) => (
-                    <Row key={index} gutter={20} type="flex" justify="center">
-                      {list.map((image, index) => (
-                        <Col key={index} xs={12} md={6}>
-                          <Logo>
-                            <Image
-                              fluid={image}
-                              style={{
-                                width: mq.lte('sm') ? '90px' : '135px',
-                              }}
-                            />
-                          </Logo>
-                        </Col>
-                      ))}
-                    </Row>
-                  ))}
+                  <h2>
+                    <Text type="secondary">
+                      <span dangerouslySetInnerHTML={{
+                        __html: props.title,
+                      }} />
+                    </Text>
+                  </h2>
+                  <VerticalSpacing size={3} />
                 </React.Fragment>
               )}
-            </Media>
-          </React.Fragment>
-        ) : null}
 
-        {[TYPE_DEFAULT, TYPE_CASE_STUDY, TYPE_ABOUT].includes(props.pageType) && (
-          <div>
-            <Spacer />
+              <Media>
+                {mq => (
+                  <React.Fragment>
+                    {chunk(props.imageList, mq.lte('sm') ? 2 : 4).map((list, index) => (
+                      <Row key={index} gutter={20} type="flex" justify="center">
+                        {list.map((image, index) => (
+                          <Col key={index} xs={12} md={6}>
+                            <Logo>
+                              <Image
+                                fluid={image}
+                                style={{
+                                  width: mq.lte('sm') ? '90px' : '135px',
+                                }}
+                              />
+                            </Logo>
+                          </Col>
+                        ))}
+                      </Row>
+                    ))}
+                  </React.Fragment>
+                )}
+              </Media>
+            </React.Fragment>
+          ) : null}
 
-            <h2>
-              <Text type="secondary">Project in mind?</Text>
-            </h2>
+          {props.showProjectInMindBlock && (
+            <div>
+              <Spacer />
 
-            <a href="mailto:hi@unheard.design">
-              <Text type="secondary">hi@unheard.design</Text>
-            </a>
+              <h2>
+                <Text type="secondary">Project in mind?</Text>
+              </h2>
 
-            <Spacer />
-          </div>
-        )}
-      </Layout>
-    </BreakpointProvider>
-  </ThemeProvider>
-);
+              <a href="mailto:hi@unheard.design">
+                <Text type="secondary">hi@unheard.design</Text>
+              </a>
+
+              <Spacer />
+            </div>
+          )}
+        </Layout>
+      </BreakpointProvider>
+    </ThemeProvider>
+  );
+};
 
 IndexPage.propTypes = {
   pageType: PropTypes.oneOf([
@@ -305,6 +354,11 @@ IndexPage.propTypes = {
     TYPE_ABOUT,
     TYPE_CASE_STUDY,
   ]),
+  pageBackground: PropTypes.oneOf([
+    BACKGROUND_LIGHT,
+    BACKGROUND_DARK,
+  ]),
+  showProjectInMindBlock: PropTypes.bool,
   navAppearance: PropTypes.shape({
     initial: PropTypes.oneOf(navAppearanceTypes).isRequired,
     onScroll: PropTypes.oneOf(navAppearanceTypes),
@@ -317,13 +371,22 @@ IndexPage.propTypes = {
       webm: PropTypes.string,
     }),
   }),
-  /* About page props for brand list */
+  // About page props for brand list
   title: PropTypes.string,
   imageList: PropTypes.array,
+  // Process page props
+  blogEntries: PropTypes.arrayOf(PropTypes.shape({
+    date: PropTypes.string.isRequired,
+    destination: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    image: PropTypes.object.isRequired,
+    light: PropTypes.bool,
+  })),
 };
 
 IndexPage.defaultProps = {
   imageList: [],
+  blogEntries: [],
 };
 
 export default IndexPage;

@@ -88,7 +88,7 @@ const StyledNav = styled.nav`
       case NAV_DARK:
         return `
           color: #fff;
-          background-color: ${props.theme.colors.black}
+          background-color: ${props.theme.colors.darkGrey}
         `;
 
       case NAV_TRANSPARENT_LIGHT_TEXT:
@@ -130,7 +130,7 @@ const StyledNav = styled.nav`
           return '#fff';
 
         case NAV_DARK:
-          return props.theme.colors.black;
+          return props.theme.colors.darkGrey;
 
         default:
         case NAV_TRANSPARENT_LIGHT_TEXT:
@@ -348,7 +348,6 @@ const Copyright = styled.small`
 const Video = styled.video`
   object-fit: cover;
   height: 100vh !important;
-  margin-bottom: 30px;
 `;
 
 const HeroText = styled.div`
@@ -372,12 +371,13 @@ const HeroText = styled.div`
   }
 `;
 
-const Layout = ({
+const Layout = styled(({
   hero,
   video,
   navAppearance,
   theme,
   children,
+  className,
 }) => {
   const headerEl = useRef(null);
 
@@ -423,7 +423,7 @@ const Layout = ({
   }
 
   return (
-    <React.Fragment>
+    <div className={className}>
       {/* <Header siteTitle={data.site.siteMetadata.title} /> */}
 
       <Header ref={headerEl}>
@@ -485,14 +485,13 @@ const Layout = ({
             style={{
               height: '100vh',
               width: '100%',
-              marginBottom: '30px',
             }}
           />
         )}
 
-        {hero && !hero.image && hero.video && hero.video.mp4 && (
+        {hero && !hero.image && hero.video && (
           <Video
-            src={hero.video.mp4}
+            src={hero.video}
             id="plyr"
           />
         )}
@@ -506,6 +505,10 @@ const Layout = ({
         )}
       </Header>
 
+      {hero && (hero.image || hero.video) && (
+        <VerticalSpacing size={3} />
+      )}
+
       <main role="main">
         <Constrain>
           {children}
@@ -513,18 +516,17 @@ const Layout = ({
       </main>
 
       <Footer />
-    </React.Fragment>
+    </div>
   );
-}
+})`
+  overflow-x: hidden;
+`;
 
 Layout.propTypes = {
   hero: PropTypes.shape({
     text: PropTypes.string,
     image: PropTypes.object,
-    video: PropTypes.shape({
-      mp4: PropTypes.string,
-      webm: PropTypes.string,
-    }),
+    video: PropTypes.string,
   }),
   navAppearance: PropTypes.shape({
     initial: PropTypes.oneOf(navAppearanceTypes).isRequired,

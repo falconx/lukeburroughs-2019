@@ -63,7 +63,7 @@ const LargeNavList = props => (
   <NavList>
     <NavListItem>
       <NavLink
-        href="/"
+        href="/work"
         active
         isSticky={props.isSticky}
         text={props.text}
@@ -71,14 +71,14 @@ const LargeNavList = props => (
     </NavListItem>
     <NavListItem>
       <NavLink
-        href="/"
+        href="/process"
         isSticky={props.isSticky}
         text={props.text}
       >Process</NavLink>
     </NavListItem>
     <NavListItem>
       <NavLink
-        href="/"
+        href="/about"
         isSticky={props.isSticky}
         text={props.text}
       >About</NavLink>

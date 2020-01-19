@@ -16,38 +16,6 @@ module.exports = {
         path: `${__dirname}/src/images`,
       },
     },
-    'gatsby-transformer-sharp',
-    'gatsby-plugin-sharp',
-    {
-      resolve: 'gatsby-plugin-manifest',
-      options: {
-        name: 'Matt Layton Portfolio',
-        short_name: 'Matt Layton',
-        start_url: '/',
-        background_color: '#e677ad',
-        theme_color: '#e677ad',
-        display: 'minimal-ui',
-        // icon: "src/images/gatsby-icon.png", // This path is relative to the root of the site.
-      },
-    },
-    // this (optional) plugin enables Progressive Web App + Offline functionality
-    // To learn more, visit: https://gatsby.app/offline
-    // "gatsby-plugin-offline",
-    // "gatsby-transformer-remark",
-    {
-      resolve: 'gatsby-transformer-remark',
-      options: {
-        plugins: [
-          {
-            resolve: 'gatsby-remark-images',
-            options: {
-              maxWidth: 1920,
-            },
-          },
-          'gatsby-remark-copy-linked-files',
-        ],
-      },
-    },
     {
       resolve: 'gatsby-source-filesystem',
       options: {
@@ -78,6 +46,38 @@ module.exports = {
           '**/taxonomies',
           '**/users',
           '**/case_study',
+        ],
+      },
+    },
+    'gatsby-plugin-sharp',
+    'gatsby-transformer-sharp',
+    {
+      resolve: 'gatsby-plugin-manifest',
+      options: {
+        name: 'Matt Layton Portfolio',
+        short_name: 'Matt Layton',
+        start_url: '/',
+        background_color: '#e677ad',
+        theme_color: '#e677ad',
+        display: 'minimal-ui',
+        // icon: "src/images/gatsby-icon.png", // This path is relative to the root of the site.
+      },
+    },
+    // this (optional) plugin enables Progressive Web App + Offline functionality
+    // To learn more, visit: https://gatsby.app/offline
+    // "gatsby-plugin-offline",
+    // "gatsby-transformer-remark",
+    {
+      resolve: 'gatsby-transformer-remark',
+      options: {
+        plugins: [
+          {
+            resolve: 'gatsby-remark-images',
+            options: {
+              maxWidth: 1920,
+            },
+          },
+          'gatsby-remark-copy-linked-files',
         ],
       },
     },

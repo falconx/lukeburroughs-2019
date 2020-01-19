@@ -12,6 +12,9 @@ exports.createPages = ({ graphql, actions }) => {
           node {
             id
             slug
+            acf {
+              page_type
+            }
           }
         }
       }
@@ -24,14 +27,21 @@ exports.createPages = ({ graphql, actions }) => {
       reject(result.error);
     }
 
-    const postEdges = result.data.allWordpressPage.edges;
+    const edges = result.data.allWordpressPage.edges;
     const template = path.resolve('./src/templates/page.js');
 
-    postEdges.forEach(edge => {
-      console.log('create page', edge.node.slug);
+    edges.forEach(edge => {
+      const isHomePage = edge.node.acf.page_type === 'Home';
+
+      let path = '/';
+      if (!isHomePage) {
+        path += edge.node.slug;
+      }
+
+      console.log('create page', path);
 
       createPage({
-        path: `/${edge.node.slug}`,
+        path,
         component: template,
         context: {
           id: edge.node.id,

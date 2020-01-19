@@ -30,13 +30,13 @@ const NavLink = styled.a.attrs(props => ({
 const CompactNavList = () => (
   <NavList>
     <NavListItem>
-      <NavLink href="/" active>Work</NavLink>
+      <NavLink href="/work" active>Work</NavLink>
     </NavListItem>
     <NavListItem>
-      <NavLink href="/">Process</NavLink>
+      <NavLink href="/process">Process</NavLink>
     </NavListItem>
     <NavListItem>
-      <NavLink href="/">About</NavLink>
+      <NavLink href="/about">About</NavLink>
     </NavListItem>
   </NavList>
 );
