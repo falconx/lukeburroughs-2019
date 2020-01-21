@@ -26,8 +26,8 @@ module.exports = {
     {
       resolve: 'gatsby-source-wordpress',
       options: {
-        baseUrl: process.env.WORDPRESS_BASE_URL,
-        protocol: process.env.WORDPRESS_PROTOCOL,
+        baseUrl: process.env.GATBSY_WORDPRESS_BASE_URL,
+        protocol: process.env.GATBSY_WORDPRESS_PROTOCOL,
         hostingWPCOM: (process.env.WORDPRESS_HOSTING_WPCOM === 'true'),
         useACF: (process.env.WORDPRESS_USE_ACF === 'true'),
         verboseOutput: (process.env.WORDPRESS_VERBOSE_OUTPUT === 'true'),

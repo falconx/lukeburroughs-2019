@@ -74,7 +74,9 @@ const COMPONENT_SUB_TITLE = 'sub_title';
 
 const MODE_DARK = 'Dark';
 
-const WORDPRESS_URL = 'http://localhost/unheard-www';
+const WORDPRESS_URL = `${process.env.GATBSY_WORDPRESS_PROTOCOL}://${process.env.GATBSY_WORDPRESS_BASE_URL}`;
+
+console.log('WORDPRESS_URL', WORDPRESS_URL);
 
 const transformLink = link => link && link.replace(WORDPRESS_URL, '');
 
@@ -625,8 +627,6 @@ const Page = props => {
     page_background: pageBackground,
     show_project_in_mind_block: showProjectInMindBlock,
   } = page.acf;
-
-  console.log(page);
 
   return (
     <ThemeProvider theme={theme}>
