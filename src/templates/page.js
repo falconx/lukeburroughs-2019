@@ -282,12 +282,17 @@ const GlobalStyles = createGlobalStyle`
   }
 
   :root {
+    height: 100%;
+  }
+
+  #___gatsby,
+  #gatsby-focus-wrapper {
     min-height: 100%;
   }
 
   /* Set core body defaults */
   body {
-    min-height: 100%;
+    height: 100%;
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
     line-height: 1.5;

@@ -42,10 +42,10 @@ const Link = styled.a`
   }
 `;
 
-const Footer = () => (
+const Footer = styled(props => (
   <Media>
     {mq => (
-      <footer>
+      <footer className={props.className}>
         <Constrain>
           <Content>
             <TextSquare>
@@ -83,6 +83,8 @@ const Footer = () => (
       </footer>
     )}
   </Media>
-);
+))`
+  margin-top: auto;
+`;
 
 export default Footer;
