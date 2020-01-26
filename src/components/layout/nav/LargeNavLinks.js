@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { Link } from 'gatsby';
 
 const LIGHT = 'light';
 const DARK = 'dark';
@@ -15,8 +16,9 @@ const NavListItem = styled.li`
   }
 `;
 
-const NavLink = styled.a.attrs(props => ({
+const NavLink = styled(Link).attrs(props => ({
   title: props.children,
+  activeClassName: 'active',
 }))`
   position: relative;
   border-bottom: 1px solid transparent;
@@ -44,15 +46,15 @@ const NavLink = styled.a.attrs(props => ({
     border-bottom-color: currentColor;
   }
 
-  ${props => props.active && `
-    color: ${props.text === LIGHT
+  &.active {
+    color: ${props => props.text === LIGHT
       ? '#fff'
       : props.theme.colors.black
     };
 
     font-weight: 500;
     border-bottom-color: currentColor;
-  `}
+  }
 `;
 
 NavLink.propTypes = {
@@ -63,22 +65,21 @@ const LargeNavList = props => (
   <NavList>
     <NavListItem>
       <NavLink
-        href="/work"
-        active
+        to="/"
         isSticky={props.isSticky}
         text={props.text}
       >Work</NavLink>
     </NavListItem>
     <NavListItem>
       <NavLink
-        href="/process"
+        to="/process"
         isSticky={props.isSticky}
         text={props.text}
       >Process</NavLink>
     </NavListItem>
     <NavListItem>
       <NavLink
-        href="/about"
+        to="/about"
         isSticky={props.isSticky}
         text={props.text}
       >About</NavLink>
