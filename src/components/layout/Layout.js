@@ -226,7 +226,7 @@ const Nav = ({
       stickyOnScroll={stickyOnScroll}
       navAppearance={props.navAppearance}
       // force re-render to initiate CSS animation
-      key={isSticky}
+      // key={isSticky}
     />
   );
 };
