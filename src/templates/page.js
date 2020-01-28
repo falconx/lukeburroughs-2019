@@ -74,11 +74,7 @@ const COMPONENT_SUB_TITLE = 'sub_title';
 
 const MODE_DARK = 'Dark';
 
-const WORDPRESS_URL = `${process.env.GATBSY_WORDPRESS_PROTOCOL}://${process.env.GATBSY_WORDPRESS_BASE_URL}`;
-
-console.log('WORDPRESS_URL', WORDPRESS_URL);
-
-const transformLink = link => link && link.replace(WORDPRESS_URL, '');
+const transformLink = link => link && link.replace(process.env.GATSBY_WORDPRESS_URL, '');
 
 // "Ignore" hack added as a workaround to https://github.com/gatsbyjs/gatsby/issues/15707
 export const query = graphql`
