@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
-import styled, { css, keyframes } from 'styled-components';
+import styled from 'styled-components';
 import Image from 'gatsby-image/withIEPolyfill';
+import { motion } from 'framer-motion';
 
 import 'plyr/dist/plyr.css';
 
@@ -20,7 +21,6 @@ if (typeof document !== 'undefined') {
   var Plyr = require('plyr');
 }
 
-const SLIDE_IN_DURATION = 1000; // ms
 const FADE_IN_DURATION = 500; // ms
 
 const NAV_LIGHT = 'Light';
@@ -35,25 +35,6 @@ const navAppearanceTypes = [
   NAV_TRANSPARENT_DARK_TEXT,
 ];
 
-const slideIn = color => keyframes`
-  0% {
-    position: absolute;
-    transform: translateY(0);
-  }
-
-  1% {
-    position: fixed;
-    transform: translateY(-100%);
-    background-color: ${color};
-  }
-
-  100% {
-    position: fixed;
-    transform: translateY(0);
-    background-color: ${color};
-  }
-`;
-
 const Header = styled.header`
   position: relative;
   min-height: ${props => props.theme.layout.navHeight.xs}px;
@@ -62,110 +43,6 @@ const Header = styled.header`
     min-height: ${props => props.theme.layout.navHeight.md}px;
   }
 `;
-
-const StyledNav = styled.nav`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1;
-
-  ${props => props.isDrawerOpen && `
-    color: #fff;
-  `}
-
-  ${props => !props.stickyOnScroll && `
-    position: fixed;
-    top: 0;
-    left: 0;
-  `}
-
-  ${props => {
-    switch (props.navAppearance.initial) {
-      case NAV_LIGHT:
-        return `
-          color: ${props.theme.colors.black};
-          background-color: #fff
-        `;
-
-      case NAV_DARK:
-        return `
-          color: #fff;
-          background-color: ${props.theme.colors.darkGrey}
-        `;
-
-      case NAV_TRANSPARENT_LIGHT_TEXT:
-        return `
-          color: #fff;
-          background-color: transparent;
-        `;
-
-      default:
-      case NAV_TRANSPARENT_DARK_TEXT:
-        return `
-          color: ${props.theme.colors.black};
-          background-color: transparent;
-        `;
-    }
-  }};
-
-  ${props => {
-    if (props.isSticky) {
-      return `color: ${(() => {
-        switch (props.navAppearance.onScroll) {
-          case NAV_DARK:
-          case NAV_TRANSPARENT_LIGHT_TEXT:
-            return '#fff';
-
-          default:
-          case NAV_LIGHT:
-          case NAV_TRANSPARENT_DARK_TEXT:
-            return props.theme.colors.black;
-        }
-      })()};`;
-    }
-  }};
-
-  ${props => props.stickyOnScroll && css`
-    animation: ${slideIn((() => {
-      switch (props.navAppearance.onScroll) {
-        case NAV_LIGHT:
-          return '#fff';
-
-        case NAV_DARK:
-          return props.theme.colors.darkGrey;
-
-        default:
-        case NAV_TRANSPARENT_LIGHT_TEXT:
-        case NAV_TRANSPARENT_DARK_TEXT:
-          return 'transparent';
-      }
-    })())} ${SLIDE_IN_DURATION / 1000}s;
-
-    animation-iteration-count: 1;
-    animation-fill-mode: backwards;
-    animation-direction: reverse;
-
-    ${props.isSticky && `
-      animation-fill-mode: forwards;
-      animation-direction: normal;
-    `}
-
-    ${props.isInitialRender && `
-      visibility: hidden;
-    `}
-  `}
-`;
-
-StyledNav.propTypes = {
-  isInitialRender: PropTypes.bool,
-  isSticky: PropTypes.bool,
-  navAppearance: PropTypes.shape({
-    initial: PropTypes.oneOf(navAppearanceTypes).isRequired,
-    onScroll: PropTypes.oneOf(navAppearanceTypes),
-  }).isRequired,
-  stickyOnScroll: PropTypes.bool,
-};
 
 const NavContent = styled.div`
   margin: 0 auto;
@@ -185,65 +62,104 @@ const NavContent = styled.div`
   }
 `;
 
-const Nav = ({
-  stickyOffset,
-  stickyOnScroll,
-  onSetIsSticky,
-  ...props,
-}) => {
-  const [isSticky, setIsSticky] = useState(false);
-  const [isInitialRender, setIsInitialRender] = useState(true);
-
-  const onScroll = () => {
-    if (stickyOnScroll) {
-      setIsSticky(window.pageYOffset > stickyOffset);
-
-      if (isSticky !== (window.pageYOffset > stickyOffset)) {
-        onSetIsSticky(window.pageYOffset > stickyOffset);
-      }
+const Nav = styled(props => {
+  const variants = {
+    default: {
+      translateY: ['0%', '-100%'],
+      transitionEnd: {
+        position: 'absolute',
+        translateY: 0,
+      },
+    },
+    sticky: {
+      position: 'fixed',
+      translateY: ['-100%', '0%'],
     }
-  }
-
-  useEffect(() => {
-    window.addEventListener('scroll', onScroll);
-
-    // hides the nav whilst it transitions into position
-    setTimeout(() => {
-      setIsInitialRender(false);
-    }, SLIDE_IN_DURATION);
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-    };
-  });
+  };
 
   return (
-    <StyledNav
+    <motion.nav
       {...props}
-      isInitialRender={isInitialRender}
-      isSticky={isSticky}
-      isDrawerOpen={props.isDrawerOpen}
-      stickyOnScroll={stickyOnScroll}
-      navAppearance={props.navAppearance}
-      // force re-render to initiate CSS animation
-      // key={isSticky}
+      variants={variants}
+      initial={false}
+      animate={props.isSticky ? 'sticky' : 'default'}
     />
   );
-};
+})`
+  left: 0;
+  width: 100%;
+  z-index: 1;
+
+  ${props => props.isDrawerOpen && `
+    color: #fff;
+  `}
+
+  ${props => {
+    switch (props.navAppearance.initial) {
+      case NAV_LIGHT:
+        return `
+          color: ${props.theme.colors.black};
+          background-color: #fff;
+        `;
+
+      case NAV_DARK:
+        return `
+          color: #fff;
+          background-color: ${props.theme.colors.darkGrey};
+        `;
+
+      case NAV_TRANSPARENT_LIGHT_TEXT:
+        return `
+          color: #fff;
+          background-color: transparent;
+        `;
+
+      default:
+      case NAV_TRANSPARENT_DARK_TEXT:
+        return `
+          color: ${props.theme.colors.black};
+          background-color: transparent;
+        `;
+    }
+  }};
+
+  ${props => {
+    if (props.isSticky) {
+      switch (props.navAppearance.onScroll) {
+        case NAV_DARK:
+          return `
+            color: #fff;
+            background-color: ${props.theme.colors.darkGrey};
+          `;
+        
+        case NAV_TRANSPARENT_LIGHT_TEXT:
+          return `
+            color: #fff;
+          `;
+
+        case NAV_LIGHT:
+          return `
+            color: ${props.theme.colors.black};
+            background-color: #fff;
+          `;
+
+        default:
+        case NAV_TRANSPARENT_DARK_TEXT:
+          return `
+            color: ${props.theme.colors.black};
+          `;
+      }
+    }
+  }};
+`;
 
 Nav.propTypes = {
-  stickyOffset: PropTypes.number,
-  onSetIsSticky: PropTypes.func,
+  isSticky: PropTypes.bool,
+  isDrawerOpen: PropTypes.bool,
   navAppearance: PropTypes.shape({
     initial: PropTypes.oneOf(navAppearanceTypes).isRequired,
     onScroll: PropTypes.oneOf(navAppearanceTypes),
   }).isRequired,
-  stickyOnScroll: PropTypes.bool,
-};
-
-Nav.defaultProps = {
-  stickyOffset: 0,
-  onSetIsSticky: Function.prototype,
 };
 
 const Logo = styled.img.attrs({
@@ -387,7 +303,33 @@ const Layout = styled(({
 
   const [showDrawer, setShowDrawer] = useState(false);
   const [stickyOffset, setStickyOffset] = useState();
-  const [isSticky, setIsSticky] = useState(false);
+
+  // always sticky when not activated on scroll
+  const [isSticky, setIsSticky] = useState(!stickyOnScroll);
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  });
+
+  useLayoutEffect(() => {
+    if (stickyOnScroll) {
+      setStickyOffset(headerEl.current.offsetHeight);
+    }
+  });
+
+  useEffect(() => {
+    document.body.classList[showDrawer ? 'add' : 'remove']('noscroll');
+  }, [showDrawer]);
+
+  const onScroll = () => {
+    if (stickyOnScroll) {
+      setIsSticky(window.pageYOffset > stickyOffset);
+    }
+  }
 
   if (typeof document !== 'undefined' && hero && hero.video) {
     new Plyr(document.getElementById('plyr'), {
@@ -404,16 +346,6 @@ const Layout = styled(({
       },
     });
   }
-
-  useLayoutEffect(() => {
-    if (stickyOnScroll) {
-      setStickyOffset(headerEl.current.offsetHeight);
-    }
-  });
-
-  useEffect(() => {
-    document.body.classList[showDrawer ? 'add' : 'remove']('noscroll');
-  }, [showDrawer]);
 
   let logo = logoDark;
 
@@ -432,11 +364,9 @@ const Layout = styled(({
         <Media>
           {mq => (
             <Nav
-              stickyOffset={stickyOffset}
-              onSetIsSticky={setIsSticky}
-              isDrawerOpen={showDrawer}
-              stickyOnScroll={stickyOnScroll}
+              isSticky={isSticky}
               navAppearance={navAppearance}
+              isDrawerOpen={showDrawer}
             >
               <NavContent>
                 <a href="/">
