@@ -7,6 +7,8 @@ import Image from 'gatsby-image/withIEPolyfill';
 import { graphql } from 'gatsby';
 import get from 'lodash/get';
 import chunk from 'lodash/chunk';
+import { motion } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
 
 import { GridStyles, Row, Col } from '../components/Grid';
 import TextSquare from '../components/TextSquare';
@@ -429,6 +431,35 @@ const BlogEnties = styled.div`
   margin-top: -80px;
 `;
 
+const AnimateIntoView = props => {
+  const [ref, inView, entry] = useInView({
+    threshold: 0,
+  });
+
+  const variants = {
+    hide: {
+      opacity: 0,
+      translateY: '100px',
+    },
+    show: {
+      opacity: 1,
+      translateY: '0px',
+    },
+  };
+
+  return (
+    <motion.div
+      {...props}
+      ref={ref}
+      variants={variants}
+      animate={inView ? 'show' : 'hide'}
+      transition={{
+        duration: 2
+      }}
+    />
+  );
+};
+
 const Page = props => {
   const page = props.data.wordpressPage;
   const layouts = page.acf.layout_page || [];
@@ -516,13 +547,14 @@ const Page = props => {
 
         case COMPONENT_THUMBNAIL:
           return (
-            <Thumbnail
-              key={index}
-              image={component.content_thumbnail.localFile.childImageSharp.fluid}
-              link={transformLink(component.content_destination)}
-            >
-              {component.content_title}
-            </Thumbnail>
+            <AnimateIntoView key={index}>
+              <Thumbnail
+                image={component.content_thumbnail.localFile.childImageSharp.fluid}
+                link={transformLink(component.content_destination)}
+              >
+                {component.content_title}
+              </Thumbnail>
+            </AnimateIntoView>
           );
 
         case COMPONENT_TITLE:
@@ -580,27 +612,28 @@ const Page = props => {
 
       case LAYOUT_THUMBNAILS:
         return (
-          <Row
-            key={key}
-            gutter={20}
-          >
-            <Col xs={24} md={12}>
-              <Thumbnail
-                image={data.left_thumbnail.localFile.childImageSharp.fluid}
-                link={transformLink(data.left_destination)}
-              >
-                {data.left_title}
-              </Thumbnail>
-            </Col>
-            <Col xs={24} md={12}>
-              <Thumbnail
-                image={data.right_thumbnail.localFile.childImageSharp.fluid}
-                link={transformLink(data.right_destination)}
-              >
-                {data.right_title}
-              </Thumbnail>
-            </Col>
-          </Row>
+          <AnimateIntoView key={key}>
+            <Row
+              gutter={20}
+            >
+              <Col xs={24} md={12}>
+                <Thumbnail
+                  image={data.left_thumbnail.localFile.childImageSharp.fluid}
+                  link={transformLink(data.left_destination)}
+                >
+                  {data.left_title}
+                </Thumbnail>
+              </Col>
+              <Col xs={24} md={12}>
+                <Thumbnail
+                  image={data.right_thumbnail.localFile.childImageSharp.fluid}
+                  link={transformLink(data.right_destination)}
+                >
+                  {data.right_title}
+                </Thumbnail>
+              </Col>
+            </Row>
+          </AnimateIntoView>
         );
 
       case LAYOUT_SPACER:
