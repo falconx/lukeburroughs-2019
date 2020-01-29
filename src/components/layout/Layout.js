@@ -88,7 +88,9 @@ const Nav = styled(props => {
 })`
   left: 0;
   width: 100%;
-  z-index: 1;
+
+  /* display drawer above hero caption */
+  z-index: 1000;
 
   ${props => props.isDrawerOpen && `
     color: #fff;
