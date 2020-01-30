@@ -35,13 +35,13 @@ const Thumbnail = styled(props => (
     background-image: linear-gradient(currentColor, currentColor);
     background-position: 0% 100%;
     background-repeat: no-repeat;
-    background-size: 0% 1px;
+    background-size: 0% 2px;
     transition: background-size .5s;
   }
 
   &:hover ${UnderlineText},
   &:focus ${UnderlineText} {
-    background-size: 100% 1px;
+    background-size: 100% 2px;
   }
 `;
 

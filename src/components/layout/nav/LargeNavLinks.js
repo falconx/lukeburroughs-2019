@@ -26,7 +26,7 @@ const NavLink = styled(Link).attrs(props => ({
   background-image: linear-gradient(currentColor, currentColor);
   background-position: 0% 100%;
   background-repeat: no-repeat;
-  background-size: 0% 1px;
+  background-size: 0% 2px;
   transition: background-size .5s;
 
   /* prevent items shifting on hover/focus */
@@ -43,7 +43,7 @@ const NavLink = styled(Link).attrs(props => ({
   &:focus,
   &.active {
     font-weight: 500;
-    background-size: 100% 1px;
+    background-size: 100% 2px;
     color: ${props => props.text === LIGHT
       ? '#fff'
       : props.theme.colors.black
