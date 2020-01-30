@@ -21,14 +21,13 @@ const NavLink = styled(Link).attrs(props => ({
   activeClassName: 'active',
 }))`
   position: relative;
-  border-bottom: 1px solid transparent;
   color: ${props => props.theme.colors.steal};
-
-  /* wait until the sticky menu is off-screen before switching colour */
-  ${props => !props.isSticky && `
-    transition-property: color;
-    transition-delay: 1s;
-  `}
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0% 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  transition: background-size .5s;
 
   /* prevent items shifting on hover/focus */
   &::after {
@@ -41,19 +40,16 @@ const NavLink = styled(Link).attrs(props => ({
   }
 
   &:hover,
-  &:focus {
-    font-weight: 500;
-    border-bottom-color: currentColor;
-  }
-
+  &:focus,
   &.active {
+    font-weight: 500;
+    background-size: 100% 1px;
     color: ${props => props.text === LIGHT
       ? '#fff'
       : props.theme.colors.black
     };
 
     font-weight: 500;
-    border-bottom-color: currentColor;
   }
 `;
 

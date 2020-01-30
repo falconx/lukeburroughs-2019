@@ -6,6 +6,8 @@ import Image from 'gatsby-image/withIEPolyfill';
 import Text from '../Text';
 import VerticalSpacing from '../VerticalSpacing';
 
+const UnderlineText = styled.span``;
+
 const Thumbnail = styled(props => (
   <a
     className={props.className}
@@ -17,15 +19,30 @@ const Thumbnail = styled(props => (
 
     <h2>
       <Text type="secondary">
-        <span dangerouslySetInnerHTML={{
+        <UnderlineText dangerouslySetInnerHTML={{
           __html: props.children
         }} />
       </Text>
     </h2>
   </a>
 ))`
+  position: relative;
   display: block;
   margin: 30px 0;
+
+  ${UnderlineText} {
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0% 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    transition: background-size .5s;
+  }
+
+  &:hover ${UnderlineText},
+  &:focus ${UnderlineText} {
+    background-size: 100% 1px;
+  }
 `;
 
 Thumbnail.propTypes = {

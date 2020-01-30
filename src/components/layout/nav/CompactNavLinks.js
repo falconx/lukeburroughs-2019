@@ -16,6 +16,7 @@ const NavLink = styled.a.attrs(props => ({
   &:hover,
   &:focus {
     border-bottom-color: currentColor;
+    color: rgba(255, 255, 255, 0.5) !important;
   }
 
   ${props => props.active && `

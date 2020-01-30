@@ -432,7 +432,7 @@ const BlogEnties = styled.div`
 `;
 
 const AnimateIntoView = props => {
-  const [ref, inView, entry] = useInView({
+  const [ref, inView] = useInView({
     threshold: 0,
   });
 
