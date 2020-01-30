@@ -424,10 +424,12 @@ const Layout = styled(({
         )}
 
         {hero && !hero.image && hero.video && (
-          <Video
-            src={hero.video}
-            id="plyr"
-          />
+          <div>
+            <Video
+              src={hero.video}
+              id="plyr"
+            />
+          </div>
         )}
 
         {hero && (hero.image || hero.video) && hero.text && (
