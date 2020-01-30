@@ -49,7 +49,15 @@ module.exports = {
         ],
       },
     },
-    'gatsby-plugin-sharp',
+    {
+      resolve: 'gatsby-plugin-sharp',
+      options: {
+        // https://www.gatsbyjs.org/packages/gatsby-plugin-sharp/#using-mozjpeg
+        // useMozJpeg: true,
+        stripMetadata: true,
+        defaultQuality: 75,
+      },
+    },
     'gatsby-transformer-sharp',
     {
       resolve: 'gatsby-plugin-manifest',
@@ -74,7 +82,9 @@ module.exports = {
           {
             resolve: 'gatsby-remark-images',
             options: {
-              maxWidth: 1920,
+              maxWidth: 1620,
+              quality: 50,
+              loading: 'lazy',
             },
           },
           'gatsby-remark-copy-linked-files',
