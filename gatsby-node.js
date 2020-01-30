@@ -7,7 +7,7 @@ exports.createPages = ({ graphql, actions }) => {
   // "Ignore" hack added as a workaround to https://github.com/gatsbyjs/gatsby/issues/15707
   const query = `
     {
-      allWordpressPage(sort: { fields: date, order: DESC }) {
+      allWordpressPage(filter: { title: { regex: "/^(?!Ignore)/" } }, sort: { fields: date, order: DESC }) {
         edges {
           node {
             id
