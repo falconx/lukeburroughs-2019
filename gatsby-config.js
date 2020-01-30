@@ -54,8 +54,8 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-manifest',
       options: {
-        name: 'Matt Layton Portfolio',
-        short_name: 'Matt Layton',
+        name: 'Unheard',
+        short_name: 'Unheard',
         start_url: '/',
         background_color: '#e677ad',
         theme_color: '#e677ad',
