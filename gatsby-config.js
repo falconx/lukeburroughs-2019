@@ -55,7 +55,7 @@ module.exports = {
         // https://www.gatsbyjs.org/packages/gatsby-plugin-sharp/#using-mozjpeg
         // useMozJpeg: true,
         stripMetadata: true,
-        defaultQuality: 75,
+        defaultQuality: 100,
       },
     },
     'gatsby-transformer-sharp',
@@ -83,7 +83,7 @@ module.exports = {
             resolve: 'gatsby-remark-images',
             options: {
               maxWidth: 1620,
-              quality: 50,
+              quality: 100,
               loading: 'lazy',
             },
           },
