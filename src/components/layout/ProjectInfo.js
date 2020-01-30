@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import Text from '../Text';
 import VerticalSpacing from '../VerticalSpacing';
+import AnimateIntoView from '../AnimateIntoView';
 
 // duplicates Text "main"
 const Content = styled.div`
@@ -22,17 +23,19 @@ const Content = styled.div`
 `;
 
 const ProjectInfo = styled(props => (
-  <div className={props.className}>
-    <h2>
-      <Text type="caption">{props.caption}</Text>
-    </h2>
+  <AnimateIntoView>
+    <div className={props.className}>
+      <h2>
+        <Text type="caption">{props.caption}</Text>
+      </h2>
 
-    <VerticalSpacing size={3} />
+      <VerticalSpacing size={3} />
 
-    <Content>
-      {props.children}
-    </Content>
-  </div>
+      <Content>
+        {props.children}
+      </Content>
+    </div>
+  </AnimateIntoView>
 ))`
   margin: 70px 0;
 `;

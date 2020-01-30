@@ -4,18 +4,21 @@ import styled from 'styled-components';
 import Image from 'gatsby-image/withIEPolyfill';
 
 import { Row, Col } from '../Grid';
+import AnimateIntoView from '../AnimateIntoView';
 
 const SmallImg = styled(props => (
-  <div className={props.className}>
-    <Row gutter={20}>
-      <Col xs={24} sm={12}>
-        <Image fluid={props.imageLeft} />
-      </Col>
-      <Col xs={24} sm={12}>
-        <Image fluid={props.imageRight} />
-      </Col>
-    </Row>
-  </div>
+  <AnimateIntoView>
+    <div className={props.className}>
+      <Row gutter={20}>
+        <Col xs={24} sm={12}>
+          <Image fluid={props.imageLeft} />
+        </Col>
+        <Col xs={24} sm={12}>
+          <Image fluid={props.imageRight} />
+        </Col>
+      </Row>
+    </div>
+  </AnimateIntoView>
 ))`
   padding: 30px;
   margin: 30px 0;

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Row, Col } from '../../components/Grid';
 import Text from '../../components/Text';
 import TextSquare from '../../components/TextSquare';
+import AnimateIntoView from '../AnimateIntoView';
 
 const Spacer = styled.div`
   margin-bottom: 40px
@@ -47,36 +48,38 @@ Item.propTypes = {
 };
 
 const WhereTo = styled(props => (
-  <div className={props.className}>
-    <h2>
-      <Text type="secondary">Where To?</Text>
-    </h2>
+  <AnimateIntoView>
+    <div className={props.className}>
+      <h2>
+        <Text type="secondary">Where To?</Text>
+      </h2>
 
-    <Spacer />
+      <Spacer />
 
-    <Controls>
+      <Controls>
+        <Row gutter={20}>
+          <Col xs={24} md={8}>
+            <Control>
+              <TextSquare>Previous</TextSquare>
+            </Control>
+          </Col>
+          <Col xs={24} md={{ span: 8, offset: 8 }}>
+            <Control>
+              <TextSquare>Next</TextSquare>
+            </Control>
+          </Col>
+        </Row>
+      </Controls>
+
       <Row gutter={20}>
-        <Col xs={24} md={8}>
-          <Control>
-            <TextSquare>Previous</TextSquare>
-          </Control>
-        </Col>
-        <Col xs={24} md={{ span: 8, offset: 8 }}>
-          <Control>
-            <TextSquare>Next</TextSquare>
-          </Control>
-        </Col>
+        {React.Children.map(props.children, (child, index) => (
+          <Col xs={24} md={8}>
+            <Item isLastChild={index === React.Children.count(props.children) - 1}>{child}</Item>
+          </Col>
+        ))}
       </Row>
-    </Controls>
-
-    <Row gutter={20}>
-      {React.Children.map(props.children, (child, index) => (
-        <Col xs={24} md={8}>
-          <Item isLastChild={index === React.Children.count(props.children) - 1}>{child}</Item>
-        </Col>
-      ))}
-    </Row>
-  </div>
+    </div>
+  </AnimateIntoView>
 ))`
   margin: 70px 0;
 `;

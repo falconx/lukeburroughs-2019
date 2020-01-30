@@ -3,19 +3,22 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { Row, Col } from '../Grid';
+import AnimateIntoView from '../AnimateIntoView';
 
 const MultiColumnText = styled(props => (
-  <Row gutter={20}>
-    {props.columns.map((column, index) => (
-      <Col key={index} xs={24} md={6}>
-        <div
-         className={props.className}
-         dangerouslySetInnerHTML={{
-          __html: column.text,
-        }} />
-      </Col>
-    ))}
-  </Row>
+  <AnimateIntoView>
+    <Row gutter={20}>
+      {props.columns.map((column, index) => (
+        <Col key={index} xs={24} md={6}>
+          <div
+           className={props.className}
+           dangerouslySetInnerHTML={{
+            __html: column.text,
+          }} />
+        </Col>
+      ))}
+    </Row>
+  </AnimateIntoView>
 ))`
   > p + p {
   	margin-top: 20px;

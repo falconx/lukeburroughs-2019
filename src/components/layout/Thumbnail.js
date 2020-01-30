@@ -5,26 +5,29 @@ import Image from 'gatsby-image/withIEPolyfill';
 
 import Text from '../Text';
 import VerticalSpacing from '../VerticalSpacing';
+import AnimateIntoView from '../AnimateIntoView';
 
 const UnderlineText = styled.span``;
 
 const Thumbnail = styled(props => (
-  <a
-    className={props.className}
-    href={props.link}
-  >
-    <Image fluid={props.image} />
+  <AnimateIntoView>
+    <a
+      className={props.className}
+      href={props.link}
+    >
+      <Image fluid={props.image} />
 
-    <VerticalSpacing size={1} />
+      <VerticalSpacing size={1} />
 
-    <h2>
-      <Text type="secondary">
-        <UnderlineText dangerouslySetInnerHTML={{
-          __html: props.children
-        }} />
-      </Text>
-    </h2>
-  </a>
+      <h2>
+        <Text type="secondary">
+          <UnderlineText dangerouslySetInnerHTML={{
+            __html: props.children
+          }} />
+        </Text>
+      </h2>
+    </a>
+  </AnimateIntoView>
 ))`
   position: relative;
   display: block;
