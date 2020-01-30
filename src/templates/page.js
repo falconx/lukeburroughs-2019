@@ -7,7 +7,6 @@ import Image from 'gatsby-image/withIEPolyfill';
 import { graphql } from 'gatsby';
 import get from 'lodash/get';
 import chunk from 'lodash/chunk';
-import { motion } from 'framer-motion';
 
 import { GridStyles, Row, Col } from '../components/Grid';
 import TextSquare from '../components/TextSquare';
@@ -94,7 +93,7 @@ export const query = graphql`
         hero_image {
           localFile {
             childImageSharp {
-              fluid(quality: 100) {
+              fluid(maxWidth: 1920, quality: 100) {
                 ...GatsbyImageSharpFluid
               }
             }
@@ -111,7 +110,7 @@ export const query = graphql`
           images {
             localFile {
               childImageSharp {
-                fluid {
+                fluid(maxWidth: 390) {
                   ...GatsbyImageSharpFluid
                 }
               }
@@ -126,7 +125,7 @@ export const query = graphql`
           image {
             localFile {
               childImageSharp {
-                fluid {
+                fluid(maxWidth: 1920) {
                   ...GatsbyImageSharpFluid
                 }
               }
@@ -148,7 +147,7 @@ export const query = graphql`
               image {
                 localFile {
                   childImageSharp {
-                    fluid {
+                    fluid(maxWidth: 1620) {
                       ...GatsbyImageSharpFluid
                     }
                   }
@@ -157,7 +156,7 @@ export const query = graphql`
               content_thumbnail {
                 localFile {
                   childImageSharp {
-                    fluid {
+                    fluid(maxWidth: 1620) {
                       ...GatsbyImageSharpFluid
                     }
                   }
@@ -166,7 +165,7 @@ export const query = graphql`
               left_image {
                 localFile {
                   childImageSharp {
-                    fluid {
+                    fluid(maxWidth: 1210) {
                       ...GatsbyImageSharpFluid
                     }
                   }
@@ -175,7 +174,7 @@ export const query = graphql`
               right_image {
                 localFile {
                   childImageSharp {
-                    fluid {
+                    fluid(maxWidth: 1210) {
                       ...GatsbyImageSharpFluid
                     }
                   }
@@ -197,7 +196,7 @@ export const query = graphql`
             left_thumbnail {
               localFile {
                 childImageSharp {
-                  fluid {
+                  fluid(maxWidth: 800) {
                     ...GatsbyImageSharpFluid
                   }
                 }
@@ -208,7 +207,7 @@ export const query = graphql`
             right_thumbnail {
               localFile {
                 childImageSharp {
-                  fluid {
+                  fluid(maxWidth: 800) {
                     ...GatsbyImageSharpFluid
                   }
                 }
