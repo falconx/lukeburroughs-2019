@@ -624,7 +624,7 @@ const Page = props => {
 
   const {
     title,
-    blog_entries: blogEntries = [],
+    entries,
     page_type: pageType,
     page_background: pageBackground,
     show_project_in_mind_block: showProjectInMindBlock,
@@ -646,10 +646,10 @@ const Page = props => {
           />
           <GridStyles />
 
-          {blogEntries.length ? (
+          {entries.length ? (
             <BlogEnties>
               <FullWidth>
-                {blogEntries.map((entry, index) => (
+                {entries.map((entry, index) => (
                   <BlogEntry
                     key={index}
                     date={entry.date}
