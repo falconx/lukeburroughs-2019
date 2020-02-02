@@ -518,6 +518,7 @@ const Page = props => {
         case COMPONENT_THUMBNAIL:
           return (
             <Thumbnail
+              key={index}
               image={component.content_thumbnail.localFile.childImageSharp.fluid}
               link={transformLink(component.content_destination)}
             >
@@ -581,6 +582,7 @@ const Page = props => {
       case LAYOUT_THUMBNAILS:
         return (
           <Row
+            key={key}
             gutter={20}
           >
             <Col xs={24} md={12}>
