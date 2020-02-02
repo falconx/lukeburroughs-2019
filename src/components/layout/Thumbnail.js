@@ -4,30 +4,47 @@ import styled from 'styled-components';
 import Image from 'gatsby-image/withIEPolyfill';
 
 import Text from '../Text';
+import { Media } from '../Media';
 import VerticalSpacing from '../VerticalSpacing';
 import AnimateIntoView from '../AnimateIntoView';
 
 const UnderlineText = styled.span``;
 
 const Thumbnail = styled(props => (
-  <AnimateIntoView>
-    <a
-      className={props.className}
-      href={props.link}
-    >
-      <Image fluid={props.image} />
+  <Media>
+    {mq => {
+      let aspectRatio = props.image.aspectRatio;
 
-      <VerticalSpacing size={1} />
+      // square aspect ratio on small viewports
+      if (mq.lte('sm')) {
+        aspectRatio = 1;
+      }
 
-      <h2>
-        <Text type="secondary">
-          <UnderlineText dangerouslySetInnerHTML={{
-            __html: props.children
-          }} />
-        </Text>
-      </h2>
-    </a>
-  </AnimateIntoView>
+      return (
+        <AnimateIntoView>
+          <a
+            className={props.className}
+            href={props.link}
+          >
+            <Image fluid={{
+              ...props.image,
+              aspectRatio,
+            }} />
+
+            <VerticalSpacing size={1} />
+
+            <h2>
+              <Text type="secondary">
+                <UnderlineText dangerouslySetInnerHTML={{
+                  __html: props.children
+                }} />
+              </Text>
+            </h2>
+          </a>
+        </AnimateIntoView>
+      );
+    }}
+  </Media>
 ))`
   position: relative;
   display: block;
