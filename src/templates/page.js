@@ -646,7 +646,7 @@ const Page = props => {
           />
           <GridStyles />
 
-          {entries.length ? (
+          {entries && entries.length ? (
             <BlogEnties>
               <FullWidth>
                 {entries.map((entry, index) => (
