@@ -4,7 +4,7 @@ import styled, {
   createGlobalStyle,
 } from 'styled-components';
 import Image from 'gatsby-image/withIEPolyfill';
-import { graphql } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 import get from 'lodash/get';
 import chunk from 'lodash/chunk';
 
@@ -36,27 +36,11 @@ import matterMedium from '../fonts/MatterTRIAL-Medium.otf';
 
 import theme from '../theme';
 
-import placeholder from '../images/content-mid-1@3x.png';
-
-// const TYPE_DEFAULT = 'Default';
 const TYPE_HOME = 'Home';
 const TYPE_ABOUT = 'About';
 const TYPE_CASE_STUDY = 'Case Study';
 
-// const BACKGROUND_LIGHT = 'Light';
 const BACKGROUND_DARK = 'Dark';
-
-// const NAV_LIGHT = 'Light';
-// const NAV_DARK = 'Dark';
-// const NAV_TRANSPARENT_LIGHT_TEXT = 'Transparent w/Light Text';
-// const NAV_TRANSPARENT_DARK_TEXT = 'Transparent w/Dark Text';
-
-// const navAppearanceTypes = [
-//   NAV_LIGHT,
-//   NAV_DARK,
-//   NAV_TRANSPARENT_LIGHT_TEXT,
-//   NAV_TRANSPARENT_DARK_TEXT,
-// ];
 
 const LAYOUT_FULL_WIDTH = 'WordPressAcf_full_width';
 const LAYOUT_MULTI_COLUMN_TEXT = 'WordPressAcf_multi_column_text';
@@ -80,6 +64,25 @@ const transformLink = link => link && link.replace(process.env.GATSBY_WORDPRESS_
 // "Ignore" hack added as a workaround to https://github.com/gatsbyjs/gatsby/issues/15707
 export const query = graphql`
   query($id: String!) {
+    allWordpressPage(filter: { title: { regex: "/^(?!Ignore)/" } }, sort: { fields: date, order: DESC }) {
+      edges {
+        node {
+          title
+          slug
+          acf {
+            where_to_entry {
+              localFile {
+                childImageSharp {
+                  fluid(maxWidth: 530) {
+                    ...GatsbyImageSharpFluid
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
     wordpressPage(id: { eq: $id }) {
       title
       acf {
@@ -615,6 +618,7 @@ const Page = props => {
   const imageList = (get(page, 'acf.image_list') || []).map(item => item.images.localFile.childImageSharp.fluid);
 
   let navAppearance = get(page, 'acf.nav_appearance');
+
   if (navAppearance) {
     navAppearance = {
       initial: navAppearance.nav_appearance,
@@ -629,6 +633,14 @@ const Page = props => {
     page_background: pageBackground,
     show_project_in_mind_block: showProjectInMindBlock,
   } = page.acf;
+
+  let whereToEntries = [];
+
+  if (pageType === TYPE_CASE_STUDY) {
+    whereToEntries = props.data.allWordpressPage.edges
+      .filter(edge => edge.node.acf.where_to_entry)
+      .filter(edge => edge.node.title !== page.title);
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -678,15 +690,17 @@ const Page = props => {
             return renderLayout(type, layout, index);
           })}
 
-          {pageType === TYPE_CASE_STUDY && (
+          {whereToEntries.length ? (
             <AnimateIntoView>
               <WhereTo>
-                <img src={placeholder} alt="" />
-                <img src={placeholder} alt="" />
-                <img src={placeholder} alt="" />
+                {whereToEntries.map((edge, index) => (
+                  <Link key={index} to={`/${edge.node.slug}`}>
+                    <Image fluid={edge.node.acf.where_to_entry.localFile.childImageSharp.fluid} />
+                  </Link>
+                ))}
               </WhereTo>
             </AnimateIntoView>
-          )}
+          ) : null}
 
           {pageType === TYPE_ABOUT && imageList.length ? (
             <AnimateIntoView>
