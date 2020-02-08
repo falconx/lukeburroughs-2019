@@ -12,6 +12,7 @@ import shuffle from 'lodash/shuffle';
 import { GridStyles, Row, Col } from '../components/Grid';
 import TextSquare from '../components/TextSquare';
 import Text from '../components/Text';
+import CustomLink from '../components/Link';
 import SEO from '../components/Seo';
 import { Media, BreakpointProvider } from '../components/Media';
 import VerticalSpacing from '../components/VerticalSpacing';
@@ -753,9 +754,9 @@ const Page = props => {
                 <Text type="secondary">Project in mind?</Text>
               </h2>
 
-              <a href="mailto:hi@unheard.design">
+              <CustomLink href="mailto:hi@unheard.design">
                 <Text type="secondary">hi@unheard.design</Text>
-              </a>
+              </CustomLink>
 
               <Spacer />
             </AnimateIntoView>
