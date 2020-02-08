@@ -81,7 +81,10 @@ const Nav = styled(props => {
     <motion.nav
       {...props}
       variants={variants}
-      initial={false}
+      initial={{
+        position: 'absolute',
+        translateY: '0',
+      }}
       animate={props.isSticky ? 'sticky' : 'default'}
     />
   );
