@@ -85,22 +85,22 @@ const WhereTo = styled(props => {
 
         <Spacer />
 
-        <Controls>
-          <Row gutter={20}>
-            <Col xs={24} md={8}>
-              <Control onClick={() => { slider.current.slickPrev(); }}>
-                <TextSquare>Previous</TextSquare>
-              </Control>
-            </Col>
-            <Col xs={24} md={{ span: 8, offset: 8 }}>
-              {(slideCount > MAX_SLIDES_IN_VIEW) && (
+        {(slideCount > MAX_SLIDES_IN_VIEW) && (
+          <Controls>
+            <Row gutter={20}>
+              <Col xs={24} md={8}>
+                <Control onClick={() => { slider.current.slickPrev(); }}>
+                  <TextSquare>Previous</TextSquare>
+                </Control>
+              </Col>
+              <Col xs={24} md={{ span: 8, offset: 8 }}>
                 <Control onClick={() => { slider.current.slickNext(); }}>
                   <TextSquare>Next</TextSquare>
                 </Control>
-              )}
-            </Col>
-          </Row>
-        </Controls>
+              </Col>
+            </Row>
+          </Controls>
+        )}
 
         <Media>
           {mq => (
