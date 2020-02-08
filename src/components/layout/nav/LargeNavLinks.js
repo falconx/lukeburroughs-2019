@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link } from 'gatsby';
 
+import CustomLink from '../../Link';
+
 const LIGHT = 'light';
 const DARK = 'dark';
 
@@ -16,18 +18,11 @@ const NavListItem = styled.li`
   }
 `;
 
-const NavLink = styled(Link).attrs(props => ({
+const NavLink = styled(CustomLink).attrs(props => ({
+  as: Link,
   title: props.children,
-  activeClassName: 'active',
 }))`
-  position: relative;
   color: ${props => props.theme.colors.steal};
-  text-decoration: none;
-  background-image: linear-gradient(currentColor, currentColor);
-  background-position: 0% 100%;
-  background-repeat: no-repeat;
-  background-size: 0% 2px;
-  transition: background-size .5s;
 
   /* prevent items shifting on hover/focus */
   &::after {
@@ -42,14 +37,10 @@ const NavLink = styled(Link).attrs(props => ({
   &:hover,
   &:focus,
   &.active {
-    font-weight: 500;
-    background-size: 100% 2px;
     color: ${props => props.text === LIGHT
       ? '#fff'
       : props.theme.colors.black
     };
-
-    font-weight: 500;
   }
 `;
 

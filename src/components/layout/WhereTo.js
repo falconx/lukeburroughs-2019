@@ -50,6 +50,11 @@ const Control = styled.button.attrs({
   type: 'button'
 })`
   line-height: 1;
+
+  &:hover,
+  &:focus {
+    font-weight: 500;
+  }
 `;
 
 const Item = styled.div`
