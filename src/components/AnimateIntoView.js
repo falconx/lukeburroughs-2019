@@ -27,7 +27,7 @@ const AnimateIntoView = props => {
       variants={variants}
       animate={inView ? 'show' : 'hide'}
       transition={{
-        duration: 2,
+        duration: 1,
       }}
     />
   );
