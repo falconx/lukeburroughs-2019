@@ -693,7 +693,7 @@ const Page = props => {
             return renderLayout(type, layout, index);
           })}
 
-          {whereToEntries.length ? (
+          {(whereToEntries.length > 1) ? (
             <AnimateIntoView>
               <WhereTo>
                 {whereToEntries.map((edge, index) => (

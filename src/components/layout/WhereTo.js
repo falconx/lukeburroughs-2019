@@ -17,6 +17,10 @@ const GlobalStyles = createGlobalStyle`
     margin: 0 -10px !important;
   }
 
+  .slick-track {
+    margin: 0 !important;
+  }
+
   .slick-slide > div {
     padding: 0 10px;
   }
@@ -63,7 +67,12 @@ Item.propTypes = {
 };
 
 const WhereTo = styled(props => {
-  let slider = React.createRef(null);
+  const slider = React.createRef(null);
+
+  const MAX_SLIDES_IN_VIEW = 3;
+
+  const slideCount = React.Children.count(props.children);
+  const slidesInView = (slideCount < MAX_SLIDES_IN_VIEW) ? slideCount : MAX_SLIDES_IN_VIEW;
 
   return (
     <AnimateIntoView>
@@ -84,7 +93,7 @@ const WhereTo = styled(props => {
               </Control>
             </Col>
             <Col xs={24} md={{ span: 8, offset: 8 }}>
-              {(React.Children.count(props.children) > 3) && (
+              {(slideCount > MAX_SLIDES_IN_VIEW) && (
                 <Control onClick={() => { slider.current.slickNext(); }}>
                   <TextSquare>Next</TextSquare>
                 </Control>
@@ -100,10 +109,10 @@ const WhereTo = styled(props => {
               dots={false}
               infinite
               speed={1000}
-              slidesToScroll={3}
-              slidesToShow={mq.lte('xs') ? 1 : 3}
+              slidesToScroll={MAX_SLIDES_IN_VIEW}
+              slidesToShow={mq.lte('xs') ? 1 : slidesInView}
               slidesPerRow={1}
-              rows={mq.lte('xs') ? 3 : 1}
+              rows={mq.lte('xs') ? slidesInView : 1}
             >
               {React.Children.map(props.children, (child, index) => (
                 <Item isLastChild={index === React.Children.count(props.children) - 1}>{child}</Item>
