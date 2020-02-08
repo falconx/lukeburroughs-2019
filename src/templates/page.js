@@ -7,6 +7,7 @@ import Image from 'gatsby-image/withIEPolyfill';
 import { graphql, Link } from 'gatsby';
 import get from 'lodash/get';
 import chunk from 'lodash/chunk';
+import shuffle from 'lodash/shuffle';
 
 import { GridStyles, Row, Col } from '../components/Grid';
 import TextSquare from '../components/TextSquare';
@@ -640,6 +641,8 @@ const Page = props => {
     whereToEntries = props.data.allWordpressPage.edges
       .filter(edge => edge.node.acf.where_to_entry)
       .filter(edge => edge.node.title !== page.title);
+
+    whereToEntries = shuffle(whereToEntries);
   }
 
   return (
