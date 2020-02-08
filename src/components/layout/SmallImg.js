@@ -34,6 +34,16 @@ const SmallImg = styled(props => (
   ${props => props.theme.query.lg} {
     padding: 90px;
   }
+
+  .ant-col + .ant-col {
+    margin-top: 14px;
+  }
+
+  ${props => props.theme.query.sm} {
+    .ant-col + .ant-col {
+      margin-top: 0;
+    }
+  }
 `;
 
 SmallImg.propTypes = {
