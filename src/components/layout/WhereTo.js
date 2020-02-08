@@ -1,14 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
+import Slider from 'react-slick';
 
 import { Row, Col } from '../../components/Grid';
+import { Media } from '../../components/Media';
 import Text from '../../components/Text';
 import TextSquare from '../../components/TextSquare';
 import AnimateIntoView from '../AnimateIntoView';
 
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
+const GlobalStyles = createGlobalStyle`
+  .slick-list {
+    margin: 0 -10px !important;
+  }
+
+  .slick-slide > div {
+    padding: 0 10px;
+  }
+`;
+
 const Spacer = styled.div`
-  margin-bottom: 40px
+  margin-bottom: 40px;
 
   ${props => props.theme.query.md} {
     margin-bottom: 30px;
@@ -47,40 +62,59 @@ Item.propTypes = {
   isLastChild: PropTypes.bool
 };
 
-const WhereTo = styled(props => (
-  <AnimateIntoView>
-    <div className={props.className}>
-      <h2>
-        <Text type="secondary">Where To?</Text>
-      </h2>
+const WhereTo = styled(props => {
+  let slider = React.createRef(null);
 
-      <Spacer />
+  return (
+    <AnimateIntoView>
+      <GlobalStyles />
 
-      <Controls>
-        <Row gutter={20}>
-          <Col xs={24} md={8}>
-            <Control>
-              <TextSquare>Previous</TextSquare>
-            </Control>
-          </Col>
-          <Col xs={24} md={{ span: 8, offset: 8 }}>
-            <Control>
-              <TextSquare>Next</TextSquare>
-            </Control>
-          </Col>
-        </Row>
-      </Controls>
+      <div className={props.className}>
+        <h2>
+          <Text type="secondary">Where To?</Text>
+        </h2>
 
-      <Row gutter={20}>
-        {React.Children.map(props.children, (child, index) => (
-          <Col xs={24} md={8}>
-            <Item isLastChild={index === React.Children.count(props.children) - 1}>{child}</Item>
-          </Col>
-        ))}
-      </Row>
-    </div>
-  </AnimateIntoView>
-))`
+        <Spacer />
+
+        <Controls>
+          <Row gutter={20}>
+            <Col xs={24} md={8}>
+              <Control onClick={() => { slider.current.slickPrev(); }}>
+                <TextSquare>Previous</TextSquare>
+              </Control>
+            </Col>
+            <Col xs={24} md={{ span: 8, offset: 8 }}>
+              {(React.Children.count(props.children) > 3) && (
+                <Control onClick={() => { slider.current.slickNext(); }}>
+                  <TextSquare>Next</TextSquare>
+                </Control>
+              )}
+            </Col>
+          </Row>
+        </Controls>
+
+        <Media>
+          {mq => (
+            <Slider
+              ref={slider}
+              dots={false}
+              infinite
+              speed={1000}
+              slidesToScroll={3}
+              slidesToShow={mq.lte('xs') ? 1 : 3}
+              slidesPerRow={1}
+              rows={mq.lte('xs') ? 3 : 1}
+            >
+              {React.Children.map(props.children, (child, index) => (
+                <Item isLastChild={index === React.Children.count(props.children) - 1}>{child}</Item>
+              ))}
+            </Slider>
+          )}
+        </Media>
+      </div>
+    </AnimateIntoView>
+  );
+})`
   margin: 70px 0;
 `;
 
