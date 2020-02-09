@@ -21,6 +21,7 @@ const NavListItem = styled.li`
 const NavLink = styled(CustomLink).attrs(props => ({
   as: Link,
   title: props.children,
+  activeClassName: 'active',
 }))`
   color: ${props => props.theme.colors.steal};
 
@@ -37,6 +38,7 @@ const NavLink = styled(CustomLink).attrs(props => ({
   &:hover,
   &:focus,
   &.active {
+    background-size: 100% 2px;
     color: ${props => props.text === LIGHT
       ? '#fff'
       : props.theme.colors.black
