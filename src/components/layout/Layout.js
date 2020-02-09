@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { Link } from 'gatsby';
 import Image from 'gatsby-image/withIEPolyfill';
 import { motion } from 'framer-motion';
+import FocusTrap from 'focus-trap-react';
 
 import 'plyr/dist/plyr.css';
 
@@ -374,31 +376,33 @@ const Layout = styled(({
               isDrawerOpen={showDrawer}
             >
               <NavContent>
-                <a href="/">
+                <Link to="/">
                   <Logo src={logo} />
-                </a>
+                </Link>
 
                 {mq.lte('md') ? (
-                  <React.Fragment>
-                    <NavToggle
-                      isOpen={showDrawer}
-                      onClick={() => setShowDrawer(!showDrawer)}
-                    />
+                  <FocusTrap active={showDrawer}>
+                    <div>
+                      <NavToggle
+                        isOpen={showDrawer}
+                        onClick={() => setShowDrawer(!showDrawer)}
+                      />
 
-                    <Drawer show={showDrawer}>
-                      <NavContent>
-                        <a href="/">
-                          <Logo />
-                        </a>
-                      </NavContent>
-                      <DrawerContent>
-                        <CompactNavLinks />
-                        <Copyright>
-                          &copy; Unheard 2019 &mdash; Norwich &amp; London
-                        </Copyright>
-                      </DrawerContent>
-                    </Drawer>
-                  </React.Fragment>
+                      <Drawer show={showDrawer}>
+                        <NavContent>
+                          <Link to="/">
+                            <Logo />
+                          </Link>
+                        </NavContent>
+                        <DrawerContent>
+                          <CompactNavLinks />
+                          <Copyright>
+                            &copy; Unheard 2019 &mdash; Norwich &amp; London
+                          </Copyright>
+                        </DrawerContent>
+                      </Drawer>
+                    </div>
+                  </FocusTrap>
                 ) : (
                   <LargeNavLinks
                     text={
