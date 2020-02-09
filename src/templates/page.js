@@ -289,7 +289,7 @@ const GlobalStyles = createGlobalStyle`
 
   #___gatsby,
   #gatsby-focus-wrapper {
-    min-height: 100%;
+    height: 100%;
   }
 
   /* Set core body defaults */
