@@ -4,45 +4,84 @@ import styled from 'styled-components';
 import Constrain from './Constrain';
 
 import { Media } from '../Media';
-import TextSquare from '../TextSquare';
-import VerticalSpacing from '../VerticalSpacing';
+import { Row, Col } from '../Grid';
+
+import CustomLink from '../Link';
+
+const GUTTER = 20;
+const ICON_WIDTH = 24;
 
 const DribbleIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
-    <path fill="currentColor" fillRule="evenodd" d="M9.8 0c.663 0 1.328.067 1.974.2a9.729 9.729 0 0 1 3.505 1.475c.519.351 1.007.752 1.45 1.195a9.882 9.882 0 0 1 2.1 3.115 9.82 9.82 0 0 1 0 7.629 9.878 9.878 0 0 1-3.55 4.311 9.896 9.896 0 0 1-1.665.904 9.832 9.832 0 0 1-7.63 0 9.902 9.902 0 0 1-1.665-.904A9.887 9.887 0 0 1 .77 13.614 9.776 9.776 0 0 1 0 9.8a9.754 9.754 0 0 1 1.674-5.48 9.891 9.891 0 0 1 2.645-2.645A9.694 9.694 0 0 1 7.826.199C8.471.067 9.136 0 9.8 0zm1.48 11.15l-.056.019c-4.938 1.72-6.55 5.19-6.568 5.228A8.352 8.352 0 0 0 9.8 18.168a8.327 8.327 0 0 0 3.267-.663c-.124-.731-.61-3.294-1.788-6.355zm1.567-.387c1.098 3.016 1.544 5.473 1.63 5.977a8.372 8.372 0 0 0 3.585-5.614c-.172-.055-2.513-.796-5.215-.363zM10.03 8.342c-4.31 1.29-8.445 1.197-8.593 1.191-.002.09-.007.177-.007.267 0 2.15.811 4.11 2.145 5.592-.003-.004 2.287-4.067 6.804-5.528.109-.036.22-.069.33-.1-.21-.476-.44-.953-.68-1.422zm6.233-3.858c-.016.022-1.358 1.962-4.663 3.311a26.408 26.408 0 0 1 .737 1.647c2.875-.362 5.708.247 5.829.272a8.326 8.326 0 0 0-1.903-5.23zM6.229 2.23a8.38 8.38 0 0 0-4.62 5.844l.058.001c.514.003 3.852-.008 7.67-1.022A50.397 50.397 0 0 0 6.228 2.23zm3.57-.798c-.68 0-1.34.082-1.972.234.126.169 1.698 2.254 3.13 4.882 3.157-1.184 4.35-2.998 4.37-3.029A8.329 8.329 0 0 0 9.8 1.432z" />
+  <svg role="img" height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>Dribbble icon</title>
+    <path fill="currentColor" d="M12 24C5.385 24 0 18.615 0 12S5.385 0 12 0s12 5.385 12 12-5.385 12-12 12zm10.12-10.358c-.35-.11-3.17-.953-6.384-.438 1.34 3.684 1.887 6.684 1.992 7.308 2.3-1.555 3.936-4.02 4.395-6.87zm-6.115 7.808c-.153-.9-.75-4.032-2.19-7.77l-.066.02c-5.79 2.015-7.86 6.025-8.04 6.4 1.73 1.358 3.92 2.166 6.29 2.166 1.42 0 2.77-.29 4-.814zm-11.62-2.58c.232-.4 3.045-5.055 8.332-6.765.135-.045.27-.084.405-.12-.26-.585-.54-1.167-.832-1.74C7.17 11.775 2.206 11.71 1.756 11.7l-.004.312c0 2.633.998 5.037 2.634 6.855zm-2.42-8.955c.46.008 4.683.026 9.477-1.248-1.698-3.018-3.53-5.558-3.8-5.928-2.868 1.35-5.01 3.99-5.676 7.17zM9.6 2.052c.282.38 2.145 2.914 3.822 6 3.645-1.365 5.19-3.44 5.373-3.702-1.81-1.61-4.19-2.586-6.795-2.586-.825 0-1.63.1-2.4.285zm10.335 3.483c-.218.29-1.935 2.493-5.724 4.04.24.49.47.985.68 1.486.08.18.15.36.22.53 3.41-.43 6.8.26 7.14.33-.02-2.42-.88-4.64-2.31-6.38z" />
   </svg>
 );
 
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 60px;
-  padding: 10px 0;
+const MediumIcon = () => (
+  <svg role="img" height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>Medium icon</title>
+    <path fill="currentColor" d="M0 0v24h24V0H0zm19.938 5.686L18.651 6.92a.376.376 0 0 0-.143.362v9.067a.376.376 0 0 0 .143.361l1.257 1.234v.271h-6.322v-.27l1.302-1.265c.128-.128.128-.165.128-.36V8.99l-3.62 9.195h-.49L6.69 8.99v6.163a.85.85 0 0 0 .233.707l1.694 2.054v.271H3.815v-.27L5.51 15.86a.82.82 0 0 0 .218-.707V8.027a.624.624 0 0 0-.203-.527L4.019 5.686v-.27h4.674l3.613 7.923 3.176-7.924h4.456v.271z" />
+  </svg>
+);
 
-  ${props => props.theme.query.md} {
-    flex-direction: row;
-    align-items: center;
+const InstagramIcon = () => (
+  <svg role="img" height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>Instagram icon</title>
+    <path fill="currentColor" d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z" />
+  </svg>
+);
+
+const LinkedInIcon = () => (
+  <svg role="img" height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>LinkedIn icon</title>
+    <path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+  </svg>
+);
+
+const SocialLinks = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) auto;
+  margin: 30px -${GUTTER}px 0;
+
+  > * {
+    margin: 0 ${GUTTER}px;
   }
-`;
 
-const SocialLinks = styled.ul`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
+  ${props => props.theme.query.lg} {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+    margin: 0;
 
-  ${props => props.theme.query.md} {
-    width: auto;
+    > * {
+      margin: 0;
+    }
   }
 `;
 
 const Link = styled.a`
   display: flex;
-  justify-content: flex-end;
-  text-align: right;
+`;
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  ${props => props.theme.query.lg} {
+    flex-direction: row;
+  }
+`;
+
+const TextContainer = styled.div`
+  flex: 1;
+  margin-right: ${ICON_WIDTH + GUTTER}px;
+`;
+
+const UnheardText = styled.div`
+  margin-bottom: 30px;
 
   ${props => props.theme.query.md} {
-    min-width: 100px;
+    margin-bottom: 0;
   }
 `;
 
@@ -52,35 +91,37 @@ const Footer = styled(props => (
       <footer className={props.className}>
         <Constrain>
           <Content>
-            <TextSquare>
-              &copy; Unheard 2019 &mdash; Norwich &amp; London
-            </TextSquare>
+            <TextContainer>
+              <Row gutter={20}>
+                <Col xs={24} md={8}>
+                  <UnheardText>&copy; Unheard Design</UnheardText>
+                </Col>
 
-            {mq.lte('sm') && (
-              <VerticalSpacing size={2} />
-            )}
+                <Col xs={12} md={8}>
+                  <CustomLink href="mailto:hi@unheard.design">hi@unheard.design</CustomLink><br />
+                  +44 784 00 95144
+                </Col>
+
+                <Col cs={12} md={8}>
+                  Website Development:<br />
+                  <CustomLink href="http://mattlayton.co.uk" target="blank">mattlayton.co.uk</CustomLink>&rarr;
+                </Col>
+              </Row>
+            </TextContainer>
 
             <SocialLinks>
-              <li>
-                <Link href="/">
-                  <DribbleIcon />
-                </Link>
-              </li>
-              <li>
-                <Link href="/">
-                  <DribbleIcon />
-                </Link>
-              </li>
-              <li>
-                <Link href="/">
-                  <DribbleIcon />
-                </Link>
-              </li>
-              <li>
-                <Link href="/">
-                  <DribbleIcon />
-                </Link>
-              </li>
+              <Link href="/">
+                <DribbleIcon />
+              </Link>
+              <Link href="/">
+                <InstagramIcon />
+              </Link>
+              <Link href="/">
+                <LinkedInIcon />
+              </Link>
+              <Link href="/">
+                <MediumIcon />
+              </Link>
             </SocialLinks>
           </Content>
         </Constrain>
@@ -89,6 +130,7 @@ const Footer = styled(props => (
   </Media>
 ))`
   margin-top: auto;
+  padding-bottom: 20px;
 `;
 
 export default Footer;

@@ -177,7 +177,8 @@ const Logo = styled.img.attrs({
 `;
 
 const NavToggle = styled.button.attrs({
-  type: 'button'
+  type: 'button',
+  'aria-label': props => props.isOpen ? 'Close navigation' : 'Open navigation',
 })`
   width: 20px;
   height: 20px;
