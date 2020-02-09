@@ -16,8 +16,19 @@ const Link = styled.a`
   min-height: 50px;
   font-size: 0.875rem;
   padding: 10px 20px;
-  color: ${props => props.light ? '#2b2b2b' : '#fff'};
+  color: ${props => props.light ? '#fff' : '#2b2b2b'};
   background-color: ${props => props.light ? '#fff' : '#2b2b2b'};
+
+  background: linear-gradient(${props => props.light ? 'to right, white 50%, black 50%': 'to right, black 50%, white 50%'});
+  background-size: 200% 100%;
+  background-position: right bottom;
+  transition: all .25s ease-out;
+
+  &:hover,
+  &:active {
+    color: ${props => props.light ? '#2b2b2b' : '#fff'};
+    background-position: left bottom;
+  }
 `;
 
 Link.propTypes = {
