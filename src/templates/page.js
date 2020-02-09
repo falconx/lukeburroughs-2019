@@ -565,19 +565,19 @@ const Page = props => {
             key={key}
             columns={[
               {
-                // hasBlock: data.column_1_block,
+                hasBlock: data.column_1_block === 'yes',
                 text: data.column_1_text,
               },
               {
-                // hasBlock: data.column_2_block,
+                hasBlock: data.column_2_block === 'yes',
                 text: data.column_2_text,
               },
               {
-                // hasBlock: data.column_3_block,
+                hasBlock: data.column_3_block === 'yes',
                 text: data.column_3_text,
               },
               {
-                // hasBlock: data.column_4_block,
+                hasBlock: data.column_4_block === 'yes',
                 text: data.column_4_text,
               },
             ]}
