@@ -51,7 +51,7 @@ NavLink.propTypes = {
 };
 
 // Todo: duplicated at page.js
-const transformLink = link => link && link.replace(process.env.GATSBY_WORDPRESS_URL, '');
+const transformLink = link => (link && link.replace(process.env.GATSBY_WORDPRESS_URL, '')) || '/';
 
 const LargeNavList = props => {
   const data = useStaticQuery(graphql`

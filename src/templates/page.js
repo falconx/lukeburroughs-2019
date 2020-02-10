@@ -62,7 +62,7 @@ const COMPONENT_SUB_TITLE = 'sub_title';
 
 const MODE_DARK = 'Dark';
 
-const transformLink = link => link && link.replace(process.env.GATSBY_WORDPRESS_URL, '');
+const transformLink = link => (link && link.replace(process.env.GATSBY_WORDPRESS_URL, '')) || '/';
 
 // "Ignore" hack added as a workaround to https://github.com/gatsbyjs/gatsby/issues/15707
 export const query = graphql`
