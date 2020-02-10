@@ -37,16 +37,7 @@ module.exports = {
           wpcom_user: process.env.WORDPRESS_USER,
           wpcom_pass: process.env.WORDPRESS_PASSWORD,
         },
-        includedRoutes: [
-          '**/posts',
-          '**/pages',
-          '**/media',
-          '**/categories',
-          '**/tags',
-          '**/taxonomies',
-          '**/users',
-          '**/case_study',
-        ],
+        excludedRoutes: ["**/settings", "**/themes", "**/users/me"],
       },
     },
     {

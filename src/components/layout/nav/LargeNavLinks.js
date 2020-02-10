@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Link } from 'gatsby';
+import { Link, useStaticQuery, graphql } from 'gatsby';
 
 import CustomLink from '../../Link';
 
@@ -50,31 +50,38 @@ NavLink.propTypes = {
   isSticky: PropTypes.bool
 };
 
-const LargeNavList = props => (
-  <NavList>
-    <NavListItem>
-      <NavLink
-        to="/"
-        isSticky={props.isSticky}
-        text={props.text}
-      >Work</NavLink>
-    </NavListItem>
-    <NavListItem>
-      <NavLink
-        to="/process"
-        isSticky={props.isSticky}
-        text={props.text}
-      >Process</NavLink>
-    </NavListItem>
-    <NavListItem>
-      <NavLink
-        to="/about"
-        isSticky={props.isSticky}
-        text={props.text}
-      >About</NavLink>
-    </NavListItem>
-  </NavList>
-);
+// Todo: duplicated at page.js
+const transformLink = link => link && link.replace(process.env.GATSBY_WORDPRESS_URL, '');
+
+const LargeNavList = props => {
+  const data = useStaticQuery(graphql`
+    query MainMenuItems {
+      wordpressWpApiMenusMenusItems(name: { eq: "Main" }) {
+        items {
+          url
+          title
+        }
+      }
+    }
+  `);
+
+  const mainMenuItems = data.wordpressWpApiMenusMenusItems.items;
+
+  return (
+    <NavList>
+      {mainMenuItems.map(item => (
+        <NavListItem>
+          <NavLink
+            key={item.title}
+            to={transformLink(item.url)}
+            isSticky={props.isSticky}
+            text={item.title}
+          >{item.title}</NavLink>
+        </NavListItem>
+      ))}
+    </NavList>
+  );
+};
 
 LargeNavList.propTypes = {
   text: PropTypes.oneOf([
