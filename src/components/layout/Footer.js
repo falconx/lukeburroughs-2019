@@ -110,16 +110,16 @@ const Footer = styled(props => (
             </TextContainer>
 
             <SocialLinks>
-              <Link href="/">
+              <Link href="https://dribbble.com/unheardesign">
                 <DribbleIcon />
               </Link>
-              <Link href="/">
+              <Link href="https://www.instagram.com/unheard.design">
                 <InstagramIcon />
               </Link>
-              <Link href="/">
+              <Link href="https://medium.com/@luke.burroughs">
                 <LinkedInIcon />
               </Link>
-              <Link href="/">
+              <Link href="https://uk.linkedin.com/in/luke-burroughs-31a0975a">
                 <MediumIcon />
               </Link>
             </SocialLinks>
