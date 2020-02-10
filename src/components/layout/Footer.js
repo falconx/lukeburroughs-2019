@@ -66,6 +66,7 @@ const Link = styled.a`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
+  word-break: break-all;
 
   ${props => props.theme.query.lg} {
     flex-direction: row;
@@ -74,7 +75,10 @@ const Content = styled.div`
 
 const TextContainer = styled.div`
   flex: 1;
-  margin-right: ${ICON_WIDTH + GUTTER}px;
+
+  ${props => props.theme.query.sm} {
+    margin-right: ${ICON_WIDTH + GUTTER}px;
+  }
 `;
 
 const UnheardText = styled.div`
@@ -103,7 +107,7 @@ const Footer = styled(props => (
                 </Col>
 
                 <Col cs={12} md={8}>
-                  Website Development:<br />
+                  Development:<br />
                   <CustomLink href="http://mattlayton.co.uk" target="blank">mattlayton.co.uk</CustomLink>&rarr;
                 </Col>
               </Row>
