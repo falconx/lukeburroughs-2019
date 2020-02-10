@@ -341,7 +341,6 @@ const Layout = styled(({
 
   if (typeof document !== 'undefined' && hero && hero.video) {
     new Plyr(document.getElementById('plyr'), {
-      // title: 'Todo',
       controls: false,
       autoplay: true,
       clickToPlay: false,
@@ -352,6 +351,8 @@ const Layout = styled(({
         enabled: false,
         fallback: false,
       },
+      // allows autoplay to work in Chrome
+      muted: true,
     });
   }
 
