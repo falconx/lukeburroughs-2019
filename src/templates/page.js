@@ -10,7 +10,6 @@ import chunk from 'lodash/chunk';
 import shuffle from 'lodash/shuffle';
 
 import { GridStyles, Row, Col } from '../components/Grid';
-import TextSquare from '../components/TextSquare';
 import Text from '../components/Text';
 import CustomLink from '../components/Link';
 import SEO from '../components/Seo';
@@ -32,6 +31,8 @@ import MultiColumnText from '../components/layout/MultiColumnText';
 import Layout from '../components/layout/Layout';
 import WhereTo from '../components/layout/WhereTo';
 import BlogEntry from '../components/layout/BlogEntry';
+
+import HomeIntro from '../pageComponents/home/Intro';
 
 import matterRegular from '../fonts/MatterTRIAL-Regular.otf';
 import matterMedium from '../fonts/MatterTRIAL-Medium.otf';
@@ -390,37 +391,6 @@ const Logo = styled.div`
   }
 `;
 
-const HomeIntro = () => (
-  <React.Fragment>
-    <Row gutter={20}>
-      <Col xs={24} md={4}>
-        Luke Burroughs
-      </Col>
-      <Col xs={24} md={16}>
-        2017&mdash;present
-      </Col>
-    </Row>
-
-    <Spacer />
-
-    <Row gutter={20}>
-      <Col xs={24} md={4}>
-        <TextSquare /> Mission
-      </Col>
-      <Col xs={24} md={16}>
-        <h2>
-          <Text type="secondary">
-            Create opportunities for brands and individuals to tell
-            their stories in ways we haven’t heard before.
-          </Text>
-        </h2>
-      </Col>
-    </Row>
-
-    <Spacer />
-  </React.Fragment>
-);
-
 const FullWidth = styled.div`
   position: relative;
   width: 100vw;
@@ -681,7 +651,10 @@ const Page = props => {
           ) : null}
 
           {pageType === TYPE_HOME && (
-            <HomeIntro />
+            <React.Fragment>
+              <HomeIntro />
+              <Spacer />
+            </React.Fragment>
           )}
 
           {layouts.map((layout, index) => {
