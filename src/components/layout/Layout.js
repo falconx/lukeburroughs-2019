@@ -180,6 +180,7 @@ const NavToggle = styled.button.attrs({
   type: 'button',
   'aria-label': props => props.isOpen ? 'Close navigation' : 'Open navigation',
 })`
+  display: block;
   width: 20px;
   height: 20px;
   position: relative;
