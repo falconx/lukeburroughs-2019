@@ -29,6 +29,8 @@ const Thumbnail = styled(props => (
             <Image fluid={{
               ...props.image,
               aspectRatio,
+            }} imgStyle={{
+              transition: 'transform 1s'
             }} />
 
             <VerticalSpacing size={1} />
@@ -49,6 +51,11 @@ const Thumbnail = styled(props => (
   position: relative;
   display: block;
   margin: 30px 0;
+
+  &:hover img,
+  &:focus img {
+    transform: scale(1.1);
+  }
 
   ${UnderlineText} {
     text-decoration: none;
